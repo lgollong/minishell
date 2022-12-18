@@ -1,9 +1,0 @@
-- ~
-- cd ~
-- cd -  => cd to OLDPWD
-- ../bin/ls => shouldn't work
-- export PATH=$PATH
-- quit signal in cat
-- < snjgnsdjklg cat | ls
-- >< - file < wird erstellt
-- exitcode 126 -> existierende file ohne executingrechte
