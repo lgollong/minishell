@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 15:53:38 by lgollong          #+#    #+#             */
-/*   Updated: 2022/12/13 11:30:34 by tfriedri         ###   ########.fr       */
+/*   Updated: 2022/12/17 17:54:15 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ int	exec_builtin(t_cmmnds *node, int builtin, int forked)
 	return (ret_val);
 }
 
-char	**change_in_env(char *set, char *replace, char **envp)
+char	**change_in_env(char *set, char *replace, char **envp, int free_set)
 {
 	int		i;
 
@@ -77,5 +77,7 @@ char	**change_in_env(char *set, char *replace, char **envp)
 	}
 	if (replace)
 		free(replace);
+	if (free_set == 1 && set)
+		free(set);
 	return (envp);
 }

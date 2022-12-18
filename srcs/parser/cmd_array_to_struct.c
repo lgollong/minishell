@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_array_to_struct.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lgollong <lgollong@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 17:04:53 by tfriedri          #+#    #+#             */
-/*   Updated: 2022/12/16 14:26:14 by lgollong         ###   ########.fr       */
+/*   Updated: 2022/12/17 18:49:21 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ t_list	*next_cmmnd_struct(t_uni *uni, t_list *last, int i)
 	int		*tube;
 
 	tmp = last;
-	if (!uni->commands[i + 1])
+	if (!uni->commands[i + 1] && ft_strcmp(uni->commands[i], "|"))
 		syntax_error(uni, uni->commands[i + 1]);
 	ft_lstadd_back(&uni->cmd_lst, ft_lstnew(create_cmmnd_struct(uni)));
 	last = ft_lstlast(uni->cmd_lst);
@@ -117,12 +117,11 @@ void	cmd_array_to_struct(t_uni *uni)
 		else if (type == 0 && ((t_cmmnds *)last->content)->broken == 0)
 			cmmnd_to_struct(((t_cmmnds *)last->content), uni->commands[i++]);
 		else if (type == 5)
-		{
-			// if (!((t_cmmnds *)last->content)->cmd_array) //
-			// 	syntax_error(uni, "|"); //
 			last = next_cmmnd_struct(uni, last, i++);
-		}
 		else
 			i++;
 	}
+	if (i != 0 && i == array_length(uni->commands) && (uni->commands[i - 1]
+			&& !ft_strcmp(uni->commands[i - 1], "|")))
+		syntax_error(uni, "|");
 }

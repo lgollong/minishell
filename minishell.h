@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/09 15:29:14 by tfriedri          #+#    #+#             */
-/*   Updated: 2022/12/14 13:50:26 by tfriedri         ###   ########.fr       */
+/*   Updated: 2022/12/17 17:55:44 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,7 @@ int			ft_env(t_cmmnds *node);
 int			ft_unset(t_cmmnds *node);
 int			ft_export(t_cmmnds *node);
 int			ft_exit(t_cmmnds *node);
-char		**change_in_env(char *set, char *replace, char **envp);
+char		**change_in_env(char *set, char *replace,
+				char **envp, int free_set);
 
 #endif

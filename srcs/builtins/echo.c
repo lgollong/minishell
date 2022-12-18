@@ -6,7 +6,7 @@
 /*   By: lgollong <lgollong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 15:57:18 by lgollong          #+#    #+#             */
-/*   Updated: 2022/12/16 16:27:01 by lgollong         ###   ########.fr       */
+/*   Updated: 2022/12/18 16:42:27 by lgollong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,11 +41,12 @@ int	ft_echo(t_cmmnds *node)
 		return (1);
 	if (!node->cmd_array[i])
 		return (ft_putstr_fd("\n", node->outf), 1);
-	if (!check_newline(node->cmd_array[i]))
+	while (!check_newline(node->cmd_array[i]))
 	{
-		nl = 1;
+		nl++;
 		i++;
 	}
+	i = 1 + nl;
 	while (node->cmd_array[i])
 	{
 		ft_putstr_fd(node->cmd_array[i], node->outf);

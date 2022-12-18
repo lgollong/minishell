@@ -3,16 +3,16 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: lgollong <lgollong@student.42.fr>          +#+  +:+       +#+         #
+#    By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/09 15:14:04 by tfriedri          #+#    #+#              #
-#    Updated: 2022/12/16 17:35:47 by lgollong         ###   ########.fr        #
+#    Updated: 2022/12/17 19:18:06 by tfriedri         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 CC = cc
-CFLAGS = -Wall -Werror -Wextra -g
+CFLAGS = -Wall -Werror -Wextra
 LIBFTDIR = ./libft
 LIBFT = ./libft/libft.a
 LDFLAGS		= -L/Users/$(USER)/.brew/opt/readline/lib
@@ -49,7 +49,7 @@ $(LIBFT):
 	@make bonus -C $(LIBFTDIR)
 
 $(NAME): $(LIBFT) $(OBJS)
-	@$(CC) -fsanitize=address $(OBJS) $(LDFLAGS) $(CPPFLAGS) -lreadline -L$(LIBFTDIR) -lft -o $(NAME)
+	@$(CC) $(OBJS) $(LDFLAGS) $(CPPFLAGS) -lreadline -L$(LIBFTDIR) -lft -o $(NAME)
 
 clean:
 	@rm -f $(OBJS)
@@ -60,6 +60,3 @@ fclean: clean
 	@cd $(LIBFTDIR) && make fclean
 
 re: fclean all
-
-valgrind:
-	valgrind --quiet --tool=memcheck --leak-check=full --show-leak-kinds=all --suppressions=valgrind_supp_file --track-fds=yes ./minishell

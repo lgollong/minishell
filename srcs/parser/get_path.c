@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_path.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lgollong <lgollong@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/07 18:10:35 by tfriedri          #+#    #+#             */
-/*   Updated: 2022/12/16 17:37:44 by lgollong         ###   ########.fr       */
+/*   Updated: 2022/12/17 18:11:17 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ char	*get_path(char *cmmnd, char *envp[])
 	char	**paths;
 	char	*cmmnd_path;
 
-	if (!access(cmmnd, X_OK) && !access(cmmnd, F_OK))
+	if (!access(cmmnd, X_OK))
 		return (ft_strdup(cmmnd));
 	if (!envp || (ft_strchr(cmmnd, '/') && access(cmmnd, F_OK) < 0))
 		return (NULL);

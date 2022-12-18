@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/06 15:25:26 by lgollong          #+#    #+#             */
-/*   Updated: 2022/12/09 01:49:56 by tfriedri         ###   ########.fr       */
+/*   Updated: 2022/12/17 19:06:23 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,8 @@ char	**split_input(char *str)
 	while (str[i])
 	{
 		str_len = ft_letter_count(str, i);
-		strb[j++] = ft_substr(str, i, str_len);
+		if (cut_allow_checker('x', 0) != 1)
+			strb[j++] = ft_substr(str, i, str_len);
 		i = i + str_len;
 		while (str[i] == ' ')
 			i++;

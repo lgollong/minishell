@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lgollong <lgollong@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 12:14:39 by tilman            #+#    #+#             */
-/*   Updated: 2022/12/16 17:08:18 by lgollong         ###   ########.fr       */
+/*   Updated: 2022/12/17 20:35:19 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,9 @@ void	run_cmmnds(void *content)
 		ft_lstiter(cmd_strct->uni->cmd_lst, close_fds);
 		execve(cmd_strct->cmd_path, cmd_strct->cmd_array,
 			cmd_strct->uni->envp);
-		exit(0);
+		close(0);
+		close(1);
+		exit_minishell(2, cmd_strct->uni);
 	}
 }
 
@@ -91,13 +93,13 @@ void	wait_for_exitcode(t_uni *uni)
 	if (waitpid(uni->pid, &wstatus, 0) != -1 && WIFEXITED(wstatus))
 		temp_exitcode = WEXITSTATUS(wstatus);
 	while ((waitpid(-1, &wstatus, 0) != -1))
-		g_exitcode = 0;
-	if (g_exitcode == 130)
-		write(2, "\n", 1);
-	else if (g_exitcode == 131)
-		write(2, "Quit\n", 5);
+		continue ;
 	if (temp_exitcode != -1)
 		g_exitcode = temp_exitcode;
+	if (g_exitcode == 130)
+		write(2, "\n", 1);
+	if (g_exitcode == 131)
+		write(2, "Quit\n", 5);
 	if (last->broken != 0)
 		g_exitcode = last->broken;
 	else if (!isbuiltin(last) && !last->cmd_path)

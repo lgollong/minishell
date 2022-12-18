@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lgollong <lgollong@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 15:57:03 by lgollong          #+#    #+#             */
-/*   Updated: 2022/12/15 15:22:55 by lgollong         ###   ########.fr       */
+/*   Updated: 2022/12/17 17:56:11 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,8 +90,8 @@ int	search_in_envp(t_uni *uni, char *str, int ident_len)
 			&& ft_strncmp(uni->envp[i], str, ident_len) == 0)
 		{
 			if (ft_strchr(str, '=') != 0)
-				change_in_env(ft_substr(uni->envp[i], 0, envp_ident_len),
-					ft_strdup(str + envp_ident_len), uni->envp);
+				change_in_env(ft_substr(uni->envp[i], 0, envp_ident_len + 1),
+					ft_strdup(str + envp_ident_len + 1), uni->envp, 1);
 			break ;
 		}
 		else if (i == array_length(uni->envp) - 1)

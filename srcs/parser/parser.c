@@ -6,7 +6,7 @@
 /*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 12:05:55 by tilman            #+#    #+#             */
-/*   Updated: 2022/12/14 13:47:25 by tfriedri         ###   ########.fr       */
+/*   Updated: 2022/12/17 19:06:42 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ void	set_dollar_underscore_env(t_uni *uni)
 		arr_len = array_length(cmd_strct->cmd_array);
 		if (arr_len != 0)
 			uni->envp = change_in_env("_=",
-					ft_strdup(cmd_strct->cmd_array[arr_len - 1]), uni->envp);
+					ft_strdup(cmd_strct->cmd_array[arr_len - 1]), uni->envp, 0);
 	}
 }
 
