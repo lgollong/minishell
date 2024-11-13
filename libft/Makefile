@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: tilman <tfriedri@student.42heilbronn.de    +#+  +:+       +#+         #
+#    By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/03/27 18:57:13 by tfriedri          #+#    #+#              #
-#    Updated: 2022/10/25 09:47:31 by tilman           ###   ########.fr        #
+#    Updated: 2024/11/13 12:39:23 by rwegat           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -68,10 +68,10 @@ BOBJS = $(BSRCS:.c=.o)
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	@ar -r $(NAME) $(OBJS)
+	@ar -rcs $(NAME) $(OBJS)
 
 bonus: $(OBJS) $(BOBJS)
-	@ar -r $(NAME) $(OBJS) $(BOBJS)
+	@ar -rcs $(NAME) $(OBJS) $(BOBJS)
 
 clean:
 	@rm -f $(OBJS) $(BOBJS)
