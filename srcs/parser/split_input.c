@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split_input.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/06 15:25:26 by lgollong          #+#    #+#             */
-/*   Updated: 2022/12/17 19:06:23 by tfriedri         ###   ########.fr       */
+/*   Updated: 2024/11/14 12:09:07 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ char	**split_input(char *str)
 	if (!strb)
 		return (NULL);
 	while (str[i] == ' ')
-			i++;
+		i++;
 	while (str[i])
 	{
 		str_len = ft_letter_count(str, i);

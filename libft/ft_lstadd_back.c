@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_lstadd_back.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/05 19:15:14 by tfriedri          #+#    #+#             */
-/*   Updated: 2022/04/21 09:56:33 by tfriedri         ###   ########.fr       */
+/*   Updated: 2024/11/14 12:08:12 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,5 +22,5 @@ void	ft_lstadd_back(t_list **lst, t_list *new)
 		last->next = new;
 	}
 	else
-	*lst = new;
+		*lst = new;
 }

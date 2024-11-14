@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   helpers.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 01:41:07 by tfriedri          #+#    #+#             */
-/*   Updated: 2022/12/11 22:08:26 by tfriedri         ###   ########.fr       */
+/*   Updated: 2024/11/14 12:08:33 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	del_str_from_array(char **array, int del_pos, int del_quant)
 
 	i = 0;
 	while (i++ < del_quant)
-	{	
+	{
 		del_pos_buff = del_pos;
 		free(array[del_pos_buff]);
 		while (array[++del_pos_buff])

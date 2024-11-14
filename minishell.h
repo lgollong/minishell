@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/09 15:29:14 by tfriedri          #+#    #+#             */
-/*   Updated: 2022/12/17 17:55:44 by tfriedri         ###   ########.fr       */
+/*   Updated: 2024/11/14 12:19:59 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,7 @@ int			open_file_and_save_fd(t_uni *uni,
 void		start_here_doc(t_uni *uni, t_cmmnds *cmd_strct, int i);
 char		*get_path(char *cmmnd, char *envp[]);
 int			syntax_error(t_uni *uni, char *token);
+void		cmmnd_to_struct(t_cmmnds *cmmnd_struct, char *command);
 
 // executer/...
 void		close_fds(void *content);
@@ -108,5 +109,8 @@ int			ft_export(t_cmmnds *node);
 int			ft_exit(t_cmmnds *node);
 char		**change_in_env(char *set, char *replace,
 				char **envp, int free_set);
+
+//wildcard
+int		handle_wildcard(char *command, t_cmmnds *content);
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_array_to_struct.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 17:04:53 by tfriedri          #+#    #+#             */
-/*   Updated: 2022/12/17 18:49:21 by tfriedri         ###   ########.fr       */
+/*   Updated: 2024/11/14 12:41:13 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,11 +115,13 @@ void	cmd_array_to_struct(t_uni *uni)
 		if (type > 0 && type < 5 && ((t_cmmnds *)last->content)->broken == 0)
 			i = i + open_file_and_save_fd(uni, last->content, i, type);
 		else if (type == 0 && ((t_cmmnds *)last->content)->broken == 0)
-			cmmnd_to_struct(((t_cmmnds *)last->content), uni->commands[i++]);
+		{
+			if (handle_wildcard(uni->commands[i], (t_cmmnds *)last->content))
+				cmmnd_to_struct(((t_cmmnds *)last->content), uni->commands[i]);
+		}
 		else if (type == 5)
-			last = next_cmmnd_struct(uni, last, i++);
-		else
-			i++;
+			last = next_cmmnd_struct(uni, last, i);
+		i++;
 	}
 	if (i != 0 && i == array_length(uni->commands) && (uni->commands[i - 1]
 			&& !ft_strcmp(uni->commands[i - 1], "|")))
