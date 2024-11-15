@@ -6,7 +6,7 @@
 /*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/20 15:15:50 by tilman            #+#    #+#             */
-/*   Updated: 2024/11/14 11:05:07 by rwegat           ###   ########.fr       */
+/*   Updated: 2024/11/15 11:53:57 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,6 @@ char	*replace_if_dollar(t_uni *uni, char *str, int *j)
 }
 
 // check if char at j's position has to be interpreted or deleted
-// change by rwegat: if \* it stays in
 char	*check_for_metachars(t_uni *uni, char *str, int *j, int *cnt)
 {
 	char	*home;
