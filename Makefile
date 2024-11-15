@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+         #
+#    By: elgollong <elgollong@student.42.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/09 15:14:04 by tfriedri          #+#    #+#              #
-#    Updated: 2024/11/13 16:29:39 by rwegat           ###   ########.fr        #
+#    Updated: 2024/11/15 15:58:19 by elgollong        ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,6 +17,8 @@ LIBFTDIR = ./libft
 LIBFT = ./libft/libft.a
 LDFLAGS		= -L/Users/$(USER)/.brew/opt/readline/lib
 CPPFLAGS	= -I/Users/$(USER)/.brew/opt/readline/include
+# LDFLAGS		= -L/opt/homebrew/Cellar/readline/8.2.13/lib
+# CPPFLAGS	= -I/opt/homebrew/Cellar/readline/8.2.13/include
 
 SRCS =	srcs/main.c							\
 		srcs/initialisation.c				\

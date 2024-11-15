@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wildcard_bonus.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
+/*   By: elgollong <elgollong@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 17:47:55 by rwegat            #+#    #+#             */
-/*   Updated: 2024/11/15 14:53:04 by rwegat           ###   ########.fr       */
+/*   Updated: 2024/11/15 15:47:03 by elgollong        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,12 +85,12 @@ int	handle_wildcard(char *command, t_cmmnds *content)
 	entry = readdir(dir);
 	while (entry != NULL)
 	{
-		entry = readdir(dir);
-		if (match_wildcard(entry->d_name, command))
+		if (match_wildcard(entry->d_name, command) && entry->d_name[0] != '.')
 		{
 			cmmnd_to_struct(content, entry->d_name);
 			match_found = 1;
 		}
+		entry = readdir(dir);
 	}
 	if (match_found == 0)
 		cmmnd_to_struct(content, command);
