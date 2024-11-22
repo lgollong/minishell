@@ -6,7 +6,7 @@
 /*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 17:04:53 by tfriedri          #+#    #+#             */
-/*   Updated: 2024/11/15 10:44:02 by rwegat           ###   ########.fr       */
+/*   Updated: 2024/11/21 11:13:19 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,11 @@
 // type == 3 ?		write to outfile
 // type == 4 ?		append to outfile
 // type == 5 ?		pipe
+// bonus:
+// type == 6 ?		&& AND
+// type == 7 ?		|| OR
+// type == 8 ?		( parentheses open
+// type == 9 ?		) parentheses close
 int	get_type(t_uni *uni, int i)
 {
 	int	type;
@@ -38,6 +43,26 @@ int	get_type(t_uni *uni, int i)
 		&& ft_strlen(uni->commands[i + 1]) == 1
 		&& ft_strcmp(uni->commands[i + 1], ">") == 0)
 		type = 4;
+
+//bonus
+	if (type == 0 && ft_strlen(uni->commands[i]) == 1 &&
+	ft_strlen(uni->commands[i + 1]) == 1 &&
+	ft_strcmp(uni->commands[i + 1], "&") == 0 &&
+	ft_strcmp(uni->commands[i], "&") == 0)
+		type = 6;
+	if (type == 0 && ft_strlen(uni->commands[i]) == 1 &&
+	ft_strlen(uni->commands[i + 1]) == 1 &&
+	ft_strcmp(uni->commands[i + 1], "|") == 0 &&
+	ft_strcmp(uni->commands[i], "|") == 0)
+		type = 7;
+	if (type == 0 && ft_strlen(uni->commands[i]) == 1 &&
+	ft_strcmp(uni->commands[i], "(") == 0)
+		type = 8;
+	if (type == 8 && ft_strlen(uni->commands[i]) == 1 &&
+	ft_strcmp(uni->commands[i], ")") == 0)
+		type = 9;
+//end bonus
+
 	if (type == 0 && ft_strcmp(uni->commands[i], "|") == 0)
 		type = 5;
 	return (type);
@@ -57,6 +82,9 @@ t_cmmnds	*create_cmmnd_struct(t_uni *uni)
 	cmmnd_struct->outf = 1;
 	cmmnd_struct->uni = uni;
 	cmmnd_struct->broken = 0;
+	cmmnd_struct->left = NULL;
+	cmmnd_struct->right = NULL;
+	cmmnd_struct->exit_status = 0;
 	return (cmmnd_struct);
 }
 
@@ -86,8 +114,33 @@ t_list	*next_cmmnd_struct(t_uni *uni, t_list *last, int i)
 	else
 		close(tube[1]);
 	((t_cmmnds *)last->content)->inf = tube[0];
+	((t_cmmnds *)tmp->content)->right = (t_list *)last;
+	((t_cmmnds *)last->content)->left = (t_list *)tmp;
 	free(tube);
 	return (last);
+}
+
+// prints the content of each node in the command list
+void print_cmd_list(t_list *cmd_lst)
+{
+	t_list *current = cmd_lst;
+	t_cmmnds *cmd;
+
+	while (current)
+	{
+		cmd = (t_cmmnds *)current->content;
+		printf("Current Command: %s\n", cmd->cmd_array ? cmd->cmd_array[0] : "NULL");
+		if (cmd->left)
+			printf("Left Command: %s\n", ((t_cmmnds *)cmd->left->content)->cmd_array ? ((t_cmmnds *)cmd->left->content)->cmd_array[0] : "NULL");
+		else
+			printf("Left Command: NULL\n");
+		if (cmd->right)
+			printf("Right Command: %s\n", ((t_cmmnds *)cmd->right->content)->cmd_array ? ((t_cmmnds *)cmd->right->content)->cmd_array[0] : "NULL");
+		else
+			printf("Right Command: NULL\n");
+		printf("\n");
+		current = current->next;
+	}
 }
 
 // copies the command to the cmmnd_struct
@@ -114,6 +167,8 @@ void	cmd_array_to_struct(t_uni *uni)
 		type = get_type(uni, i);
 		if (type > 0 && type < 5 && ((t_cmmnds *)last->content)->broken == 0)
 			i = i + open_file_and_save_fd(uni, last->content, i, type);
+		else if (type >= 6 && type <= 9 && ((t_cmmnds *)last->content)->broken == 0)
+			last = next_cmmnd_struct(uni, last, i);
 		else if (type == 0 && ((t_cmmnds *)last->content)->broken == 0)
 		{
 			if (handle_wildcard(uni->commands[i], (t_cmmnds *)last->content))
@@ -126,4 +181,5 @@ void	cmd_array_to_struct(t_uni *uni)
 	if (i != 0 && i == array_length(uni->commands) && (uni->commands[i - 1]
 			&& !ft_strcmp(uni->commands[i - 1], "|")))
 		syntax_error(uni, "|");
+	print_cmd_list(uni->cmd_lst);
 }

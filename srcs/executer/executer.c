@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 12:14:39 by tilman            #+#    #+#             */
-/*   Updated: 2022/12/17 20:35:19 by tfriedri         ###   ########.fr       */
+/*   Updated: 2024/11/21 12:19:06 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,6 +129,13 @@ void	executer(t_uni *uni)
 	}
 	else
 	{
+		t_list *temp = uni->cmd_lst;
+		while (temp)
+		{
+			cmd_strct = (t_cmmnds *)temp->content;
+			printf("Command: %s\n", cmd_strct->cmd_array[0]);
+			temp = temp->next;
+		}
 		ft_lstiter(uni->cmd_lst, run_cmmnds);
 		ft_lstiter(uni->cmd_lst, close_fds);
 		wait_for_exitcode(uni);

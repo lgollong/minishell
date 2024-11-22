@@ -6,7 +6,7 @@
 /*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/09 15:29:14 by tfriedri          #+#    #+#             */
-/*   Updated: 2024/11/15 11:55:44 by rwegat           ###   ########.fr       */
+/*   Updated: 2024/11/21 12:24:29 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,11 @@ typedef struct s_cmmnds
 	int			outf;
 	t_uni		*uni;
 	int			broken;
+
+	t_list 		*left;
+	t_list 		*right;
+	int			opperator;
+	int			exit_status;
 }	t_cmmnds;
 
 // main.c

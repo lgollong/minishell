@@ -6,7 +6,7 @@
 /*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/06 15:25:26 by lgollong          #+#    #+#             */
-/*   Updated: 2024/11/14 12:09:07 by rwegat           ###   ########.fr       */
+/*   Updated: 2024/11/21 10:37:13 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,18 +61,21 @@ unsigned int	ft_word_count(char *str)
 		i++;
 	while (str[i])
 	{
-		if (cut_allow_checker(str[i], 0) == 0
-			&& str[i] != ' ')
+		if (cut_allow_checker(str[i], 0) == 0 && str[i] != ' ')
 		{
 			counter++;
-			i++;
-			if (ft_strchr("<|>", str[i - 1]) == NULL)
+			if ((str[i] == '|' && str[i + 1] == '|') || (str[i] == '&' && str[i + 1] == '&'))
+				i += 2;
+			else
 			{
-				while (ft_strchr("<|> ", str[i]) == NULL)
+				while (str[i] && str[i] != ' ' && cut_allow_checker(str[i], 0) == 0 && 
+				!((str[i] == '|' && str[i + 1] == '|') || (str[i] == '&' && str[i + 1] == '&')))
 					i++;
 			}
 		}
 		else
+			i++;
+		while (str[i] == ' ')
 			i++;
 	}
 	return (counter);
@@ -85,12 +88,19 @@ unsigned int	ft_letter_count(const char *str, unsigned int i)
 
 	k = 0;
 	cut_allow_checker('x', 1);
+	if ((str[i] == '|' && str[i + 1] == '|') || (str[i] == '&' && str[i + 1] == '&'))
+		return (2);
 	if (ft_strchr("|<>", str[i]) != NULL)
 		return (1);
 	while (str[i] != '\0')
 	{
-		if (cut_allow_checker(str[i], 0) == 0
-			&& ft_strchr("|<> ", str[i]) != NULL)
+		if (((str[i] == '|' && str[i + 1] == '|') || (str[i] == '&' && str[i + 1] == '&')) 
+		&& cut_allow_checker(str[i], 0) == 0)
+		{
+			i++;
+			break ;
+		}
+		else if (cut_allow_checker(str[i], 0) == 0 && ft_strchr("|<> ", str[i]) != NULL)
 			break ;
 		i++;
 		k++;
@@ -105,13 +115,13 @@ char	**split_input(char *str)
 	unsigned int		j;
 	unsigned int		str_len;
 	unsigned int		wrd_cnt;
-	char				**strb;
+	char				**cmd_array;
 
 	i = 0;
 	j = 0;
 	wrd_cnt = ft_word_count(str);
-	strb = (char **)ft_calloc(sizeof(char *), (wrd_cnt + 1));
-	if (!strb)
+	cmd_array = (char **)ft_calloc(sizeof(char *), (wrd_cnt + 1));
+	if (!cmd_array)
 		return (NULL);
 	while (str[i] == ' ')
 		i++;
@@ -119,11 +129,18 @@ char	**split_input(char *str)
 	{
 		str_len = ft_letter_count(str, i);
 		if (cut_allow_checker('x', 0) != 1)
-			strb[j++] = ft_substr(str, i, str_len);
+			cmd_array[j++] = ft_substr(str, i, str_len);
 		i = i + str_len;
 		while (str[i] == ' ')
 			i++;
 	}
-	strb[wrd_cnt] = NULL;
-	return (strb);
+	cmd_array[wrd_cnt] = NULL;
+
+	// Debug message to print all split up words
+	for (i = 0; i < wrd_cnt; i++)
+	{
+		printf("Word %d: %s\n", i, cmd_array[i]);
+	}
+
+	return (cmd_array);
 }

@@ -3,14 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   wildcard_bonus.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elgollong <elgollong@student.42.fr>        +#+  +:+       +#+        */
+/*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 17:47:55 by rwegat            #+#    #+#             */
-/*   Updated: 2024/11/15 15:47:03 by elgollong        ###   ########.fr       */
+/*   Updated: 2024/11/20 20:07:50 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
+
+void	edit_printed_name(char *filename, char *wildcard)
+{
+	
+	DIR				*dir;
+
+	(void)wildcard;
+	dir = opendir(filename);
+	if (!dir)
+		return ;
+	else
+		filename = ft_strjoin(filename, "/");
+	closedir(dir);
+}
 
 // special chars to interpret * as a literal char 
 void	handle_special_chars(char **wildcard, char **filename, \
@@ -38,6 +52,9 @@ char **star, char **str)
 			return ;
 		(*filename)++;
 	}
+	if (ft_strcmp(*wildcard, "*/") || \
+	ft_strnstr(*wildcard, "\\*", strlen(*wildcard)))
+		edit_printed_name(*filename, *wildcard);
 }
 
 // compares the filename with the wildcard
