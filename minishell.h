@@ -6,7 +6,7 @@
 /*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/09 15:29:14 by tfriedri          #+#    #+#             */
-/*   Updated: 2024/11/21 12:24:29 by rwegat           ###   ########.fr       */
+/*   Updated: 2024/11/25 17:30:17 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,18 @@
 
 extern int	g_exitcode;
 
+//tokens
+# define CMD 0
+# define INFILE_RE 1
+# define HERE_DOC_RE 2
+# define WR_TO_OUT 3
+# define AP_TO_OUT 4
+# define PIPE 5
+# define AND 6
+# define OR 7
+# define PAR_OPEN 8
+# define PAR_CLOSE 9
+
 typedef struct s_uni
 {
 	char		*input_string;
@@ -48,10 +60,9 @@ typedef struct s_cmmnds
 	int			outf;
 	t_uni		*uni;
 	int			broken;
-
 	t_list 		*left;
 	t_list 		*right;
-	int			opperator;
+	int			logical_op;
 	int			exit_status;
 }	t_cmmnds;
 

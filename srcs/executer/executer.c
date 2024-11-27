@@ -6,7 +6,7 @@
 /*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 12:14:39 by tilman            #+#    #+#             */
-/*   Updated: 2024/11/21 12:19:06 by rwegat           ###   ########.fr       */
+/*   Updated: 2024/11/27 15:33:02 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,28 +56,48 @@ void	run_cmmnds(void *content)
 {
 	t_cmmnds	*cmd_strct;
 	int			builtin;
+	int			prev_exitcode;
 
+	prev_exitcode = 0;
 	cmd_strct = (t_cmmnds *)content;
-	if (cmd_strct->uni->stop == 1)
-		return ;
-	builtin = isbuiltin(cmd_strct);
-	if (is_not_executable(cmd_strct, builtin) == 1)
-		return ;
-	cmd_strct->uni->pid = fork();
-	if (cmd_strct->uni->pid < 0)
-		return ;
-	if (cmd_strct->uni->pid == 0)
+	while (cmd_strct != NULL)
 	{
-		if (builtin)
-			exec_builtin(cmd_strct, builtin, 1);
-		dup2(cmd_strct->inf, 0);
-		dup2(cmd_strct->outf, 1);
-		ft_lstiter(cmd_strct->uni->cmd_lst, close_fds);
-		execve(cmd_strct->cmd_path, cmd_strct->cmd_array,
-			cmd_strct->uni->envp);
-		close(0);
-		close(1);
-		exit_minishell(2, cmd_strct->uni);
+		if (cmd_strct->uni->stop == 1)
+			return ;
+		builtin = isbuiltin(cmd_strct);
+		if (is_not_executable(cmd_strct, builtin) == 1)
+			return ;
+		// Check if the command should be executed based on the previous exit code
+		if ((cmd_strct->logical_op == AND && prev_exitcode == 0) ||
+			(cmd_strct->logical_op == OR && prev_exitcode != 0))
+		{
+			cmd_strct = (t_cmmnds *)cmd_strct->right;
+			return;
+		}
+		cmd_strct->uni->pid = fork();
+		if (cmd_strct->uni->pid < 0)
+			return ;
+		if (cmd_strct->uni->pid == 0)
+		{
+			if (builtin)
+				exec_builtin(cmd_strct, builtin, 1);
+			dup2(cmd_strct->inf, 0);
+			dup2(cmd_strct->outf, 1);
+			ft_lstiter(cmd_strct->uni->cmd_lst, close_fds);
+			execve(cmd_strct->cmd_path, cmd_strct->cmd_array,
+				cmd_strct->uni->envp);
+			close(0);
+			close(1);
+			exit_minishell(2, cmd_strct->uni);
+		}
+		else
+		{
+			waitpid(cmd_strct->uni->pid, &prev_exitcode, 0);
+			if (WIFEXITED(prev_exitcode))
+				prev_exitcode = WEXITSTATUS(prev_exitcode);
+		}
+
+		cmd_strct = (t_cmmnds *)cmd_strct->right;
 	}
 }
 
@@ -129,13 +149,6 @@ void	executer(t_uni *uni)
 	}
 	else
 	{
-		t_list *temp = uni->cmd_lst;
-		while (temp)
-		{
-			cmd_strct = (t_cmmnds *)temp->content;
-			printf("Command: %s\n", cmd_strct->cmd_array[0]);
-			temp = temp->next;
-		}
 		ft_lstiter(uni->cmd_lst, run_cmmnds);
 		ft_lstiter(uni->cmd_lst, close_fds);
 		wait_for_exitcode(uni);

@@ -6,7 +6,7 @@
 /*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 17:04:53 by tfriedri          #+#    #+#             */
-/*   Updated: 2024/11/21 11:13:19 by rwegat           ###   ########.fr       */
+/*   Updated: 2024/11/25 16:10:59 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,40 +31,39 @@ int	get_type(t_uni *uni, int i)
 	type = 0;
 	if (ft_strlen(uni->commands[i]) == 1
 		&& ft_strcmp(uni->commands[i], "<") == 0)
-		type = 1;
-	if (type == 1 && uni->commands[i + 1]
+		type = INFILE_RE;
+	if (type == INFILE_RE && uni->commands[i + 1]
 		&& ft_strlen(uni->commands[i + 1]) == 1
 		&& ft_strcmp(uni->commands[i + 1], "<") == 0)
-		type = 2;
+		type = HERE_DOC_RE;
 	if (type == 0 && ft_strlen(uni->commands[i]) == 1
 		&& ft_strcmp(uni->commands[i], ">") == 0)
-		type = 3;
-	if (type == 3 && uni->commands[i + 1]
+		type = WR_TO_OUT;
+	if (type == WR_TO_OUT && uni->commands[i + 1]
 		&& ft_strlen(uni->commands[i + 1]) == 1
 		&& ft_strcmp(uni->commands[i + 1], ">") == 0)
-		type = 4;
+		type = AP_TO_OUT;
 
 //bonus
 	if (type == 0 && ft_strlen(uni->commands[i]) == 1 &&
 	ft_strlen(uni->commands[i + 1]) == 1 &&
 	ft_strcmp(uni->commands[i + 1], "&") == 0 &&
 	ft_strcmp(uni->commands[i], "&") == 0)
-		type = 6;
+		type = AND;
 	if (type == 0 && ft_strlen(uni->commands[i]) == 1 &&
 	ft_strlen(uni->commands[i + 1]) == 1 &&
 	ft_strcmp(uni->commands[i + 1], "|") == 0 &&
 	ft_strcmp(uni->commands[i], "|") == 0)
-		type = 7;
+		type = OR;
 	if (type == 0 && ft_strlen(uni->commands[i]) == 1 &&
 	ft_strcmp(uni->commands[i], "(") == 0)
-		type = 8;
-	if (type == 8 && ft_strlen(uni->commands[i]) == 1 &&
+		type = PAR_OPEN;
+	if (type == 0 && ft_strlen(uni->commands[i]) == 1 &&
 	ft_strcmp(uni->commands[i], ")") == 0)
-		type = 9;
-//end bonus
+		type = PAR_CLOSE;
 
 	if (type == 0 && ft_strcmp(uni->commands[i], "|") == 0)
-		type = 5;
+		type = PIPE;
 	return (type);
 }
 
