@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strncmp.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: lgollong <lgollong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/27 16:52:56 by tfriedri          #+#    #+#             */
-/*   Updated: 2022/04/21 09:58:43 by tfriedri         ###   ########.fr       */
+/*   Created: 2022/03/27 16:52:56 by lgollong          #+#    #+#             */
+/*   Updated: 2024/12/10 15:30:50 by lgollong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

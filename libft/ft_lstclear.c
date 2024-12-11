@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_lstclear.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: lgollong <lgollong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/05 20:30:47 by tfriedri          #+#    #+#             */
-/*   Updated: 2022/11/17 23:48:39 by tfriedri         ###   ########.fr       */
+/*   Created: 2022/04/05 20:30:47 by lgollong          #+#    #+#             */
+/*   Updated: 2024/12/10 15:30:50 by lgollong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

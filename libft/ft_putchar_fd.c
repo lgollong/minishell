@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_putchar_fd.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: lgollong <lgollong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/03 20:59:35 by tfriedri          #+#    #+#             */
-/*   Updated: 2022/04/21 09:57:45 by tfriedri         ###   ########.fr       */
+/*   Created: 2022/04/03 20:59:35 by lgollong          #+#    #+#             */
+/*   Updated: 2024/12/10 15:30:50 by lgollong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

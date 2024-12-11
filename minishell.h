@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/09 15:29:14 by tfriedri          #+#    #+#             */
-/*   Updated: 2024/11/25 17:30:17 by rwegat           ###   ########.fr       */
+/*   Created: 2022/10/09 15:29:14 by lgollong          #+#    #+#             */
+/*   Updated: 2024/12/10 23:41:14 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,20 +50,22 @@ typedef struct s_uni
 	char		**envp;
 	pid_t		pid;
 	int			stop;
+	int			scope_p;
+	int			last_exit_status;
 }	t_uni;
 
 typedef struct s_cmmnds
 {
-	char		**cmd_array;
-	char		*cmd_path;
-	int			inf;
-	int			outf;
-	t_uni		*uni;
-	int			broken;
-	t_list 		*left;
-	t_list 		*right;
-	int			logical_op;
-	int			exit_status;
+	char				**cmd_array;
+	char				*cmd_path;
+	int					inf;
+	int					outf;
+	t_uni				*uni;
+	int					broken;
+	struct s_cmmnds		*left;
+	struct s_cmmnds		*right;
+	int					type;
+	int					scope;
 }	t_cmmnds;
 
 // main.c

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   executer.c                                         :+:      :+:    :+:   */
+/*   bonus_executer.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/19 12:14:39 by tilman            #+#    #+#             */
-/*   Updated: 2024/12/10 22:26:46 by rwegat           ###   ########.fr       */
+/*   Created: 2024/12/10 23:43:19 by rwegat            #+#    #+#             */
+/*   Updated: 2024/12/11 11:50:02 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,34 +50,85 @@ int	is_not_executable(t_cmmnds	*cmd_strct, int builtin)
 	}
 	return (0);
 }
+void print_cmmnd_details(t_cmmnds *cmd)
+{
+	printf("Command Array: ");
+	if (cmd->cmd_array)
+	{
+		for (int i = 0; cmd->cmd_array[i]; i++)
+		{
+			printf("%s ", cmd->cmd_array[i]);
+		}
+	}
+	printf("\n");
+	printf("Command Path: %s\n", cmd->cmd_path ? cmd->cmd_path : "NULL");
+	printf("Input FD: %d\n", cmd->inf);
+	printf("Output FD: %d\n", cmd->outf);
+	printf("Broken: %d\n", cmd->broken);
+	printf("Type: %d\n", cmd->type);
+	printf("Exit Status: %d\n", cmd->exit_status);
+	printf("Scope: %d\n", cmd->scope);
+	printf("Left: %p\n", (void *)cmd->left);
+	printf("Right: %p\n", (void *)cmd->right);
+	printf("--------------------\n");
+}
+
+// 
+void	logical_subshell(t_uni *uni, t_cmmnds **tmp)
+{
+	int		left_scope;
+
+	left_scope = 0;
+	if (!(*tmp)->left)
+		return ;
+	if ((*tmp)->left->scope != (*tmp)->scope)
+	{
+		left_scope = (*tmp)->left->scope;
+		if ((*tmp)->left->type == OR && uni->last_exit_status == 0)
+		{
+			while ((*tmp) && (*tmp)->scope > left_scope)
+				*tmp = (*tmp)->right;
+		}
+		else if ((*tmp)->left->type == AND && uni->last_exit_status != 0)
+		{
+			while ((*tmp) && (*tmp)->scope > left_scope)
+				*tmp = (*tmp)->right;
+		}
+		if (!*tmp)
+			return ;
+	}
+	while (*tmp && (*tmp)->left->type == AND)
+		*tmp = (*tmp)->right;
+	while (*tmp && (*tmp)->left->type == OR)
+		*tmp = (*tmp)->right;
+}
+
+void	exec_real_command(t_uni *uni, t_cmmnds **temp)
+{
+	int		fpipe[2];
+
+	logical_subshell(uni, *temp);
+	if (!*temp)
+		return ;
+	
+}
 
 // iterates throught the t_list and runs all commands
-void	run_cmmnds(void *content)
+void	run_cmmnds(t_uni *uni)
 {
-	t_cmmnds	*cmd_strct;
-	int			builtin;
+	t_cmmnds	*temp;
 
-	cmd_strct = (t_cmmnds *)content;
-	if (cmd_strct->uni->stop == 1)
-		return ;
-	builtin = isbuiltin(cmd_strct);
-	if (is_not_executable(cmd_strct, builtin) == 1)
-		return ;
-	cmd_strct->uni->pid = fork();
-	if (cmd_strct->uni->pid < 0)
-		return ;
-	if (cmd_strct->uni->pid == 0)
+	temp = uni->cmd_lst;
+	uni->scope_p = 0;
+	while (temp)
 	{
-		if (builtin)
-			exec_builtin(cmd_strct, builtin, 1);
-		dup2(cmd_strct->inf, 0);
-		dup2(cmd_strct->outf, 1);
-		ft_lstiter(cmd_strct->uni->cmd_lst, close_fds);
-		execve(cmd_strct->cmd_path, cmd_strct->cmd_array,
-			cmd_strct->uni->envp);
-		close(0);
-		close(1);
-		exit_minishell(2, cmd_strct->uni);
+		if (!temp)
+			break ;
+		print_cmmnd_details(temp);
+		exec_real_command(uni, &temp);
+		if (!temp)
+			break ;
+		temp = temp->right;
 	}
 }
 
@@ -129,7 +180,7 @@ void	executer(t_uni *uni)
 	}
 	else
 	{
-		ft_lstiter(uni->cmd_lst, run_cmmnds);
+		run_cmmnds(uni);
 		ft_lstiter(uni->cmd_lst, close_fds);
 		wait_for_exitcode(uni);
 	}

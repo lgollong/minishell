@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: elgollong <elgollong@student.42.fr>        +#+  +:+       +#+         #
+#    By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2022/10/09 15:14:04 by tfriedri          #+#    #+#              #
-#    Updated: 2024/11/15 15:58:19 by elgollong        ###   ########.fr        #
+#    Created: 2022/10/09 15:14:04 by lgollong          #+#    #+#              #
+#    Updated: 2024/12/10 20:43:20 by rwegat           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,7 +35,7 @@ SRCS =	srcs/main.c							\
 		\
 		srcs/parser/wildcard_bonus.c		\
 		\
-		srcs/executer/executer.c			\
+		srcs/executer/bonus_executer.c		\
 		\
 		srcs/helpers.c 						\
 		srcs/helpers2.c 					\

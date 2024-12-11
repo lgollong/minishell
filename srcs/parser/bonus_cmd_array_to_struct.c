@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cmd_array_to_struct.c                              :+:      :+:    :+:   */
+/*   bonus_cmd_array_to_struct.c                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/17 17:04:53 by lgollong          #+#    #+#             */
-/*   Updated: 2024/12/11 11:27:24 by rwegat           ###   ########.fr       */
+/*   Created: 2024/12/10 15:56:29 by rwegat            #+#    #+#             */
+/*   Updated: 2024/12/10 23:41:34 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ t_cmmnds	*create_cmmnd_struct(t_uni *uni)
 }
 
 // appends a new t_cmmnds struct to the cmmnds_lst
-t_list	*next_cmmnd_struct(t_uni *uni, t_list *last, int i)
+t_cmmnds	*next_cmmnd_struct(t_uni *uni, t_list *last, int i)
 {
 	t_list	*tmp;
 	int		*tube;
@@ -108,8 +108,8 @@ t_list	*next_cmmnd_struct(t_uni *uni, t_list *last, int i)
 	else
 		close(tube[1]);
 	((t_cmmnds *)last->content)->inf = tube[0];
-	((t_cmmnds *)tmp->content)->right = (t_list *)last;
-	((t_cmmnds *)last->content)->left = (t_list *)tmp;
+	((t_cmmnds *)tmp->content)->right = (t_cmmnds *)last;
+	((t_cmmnds *)last->content)->left = (t_cmmnds *)tmp;
 	free(tube);
 	return (last);
 }
@@ -125,9 +125,9 @@ void	cmmnd_to_struct(t_cmmnds *cmmnd_struct, char *command)
 // cmd_lst with t_cmmnds-structs as content
 void	cmd_array_to_struct(t_uni *uni)
 {
-	int		i;
-	int		type;
-	t_list	*last;
+	int			i;
+	int			type;
+	t_list		*last;
 
 	i = 0;
 	uni->cmd_lst = ft_lstnew(create_cmmnd_struct(uni));
