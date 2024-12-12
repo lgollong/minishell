@@ -6,7 +6,7 @@
 #    By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/09 15:14:04 by lgollong          #+#    #+#              #
-#    Updated: 2024/12/10 20:43:20 by rwegat           ###   ########.fr        #
+#    Updated: 2024/12/12 15:58:47 by rwegat           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,7 +35,8 @@ SRCS =	srcs/main.c							\
 		\
 		srcs/parser/wildcard_bonus.c		\
 		\
-		srcs/executer/bonus_executer.c		\
+		srcs/executer/executer.c			\
+		srcs/parser/bonus_set_scope.c		\
 		\
 		srcs/helpers.c 						\
 		srcs/helpers2.c 					\
@@ -48,7 +49,8 @@ SRCS =	srcs/main.c							\
 		srcs/builtins/ft_builtins.c			\
 		srcs/builtins/pwd.c					\
 		srcs/builtins/unset.c				\
-
+		\
+		
 OBJS = $(SRCS:.c=.o)
 
 all: $(NAME)
