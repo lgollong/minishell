@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/06 15:25:26 by lgollong          #+#    #+#             */
-/*   Updated: 2024/12/13 13:17:58 by rwegat           ###   ########.fr       */
+/*   Created: 2024/12/13 14:15:23 by rwegat            #+#    #+#             */
+/*   Updated: 2024/12/13 14:25:09 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,8 +90,7 @@ unsigned int	ft_letter_count(const char *str, unsigned int i)
 	cut_allow_checker('x', 1);
 	if ((str[i] == '|' && str[i + 1] == '|') || (str[i] == '&' && str[i + 1] == '&'))
 		return (2);
-	if (ft_strchr("|<>", str[i]) != NULL
-	)
+	if (ft_strchr("|<>", str[i]) != NULL)
 		return (1);
 	while (str[i] != '\0')
 	{
@@ -136,5 +135,12 @@ char	**split_input(char *str)
 			i++;
 	}
 	cmd_array[wrd_cnt] = NULL;
+
+	printf("Token list:\n");
+    for (i = 0; i < wrd_cnt; i++)
+    {
+        printf("Token %d: %s\n", i, cmd_array[i]);
+    }
+	printf("\n");
 	return (cmd_array);
 }

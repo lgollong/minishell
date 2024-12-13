@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/17 17:04:53 by lgollong          #+#    #+#             */
-/*   Updated: 2024/12/13 14:08:14 by rwegat           ###   ########.fr       */
+/*   Created: 2024/12/13 14:15:52 by rwegat            #+#    #+#             */
+/*   Updated: 2024/12/13 14:25:34 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,8 +152,28 @@ void	cmd_array_to_struct(t_uni *uni)
 		}
 		else if (type == 5)
 			last = next_cmmnd_struct(uni, last, i);
+		else if (type == AND || type == OR)
+		{
+			((t_cmmnds *)last->content)->type = type;
+			last = next_cmmnd_struct(uni, last, i);
+		}
 		i++;
 	}
+    // Debugging print to display the command structure
+    printf("Command structure:\n");
+    t_list *current = uni->cmd_lst;
+    int cmd_index = 0;
+    while (current)
+    {
+        t_cmmnds *cmd = (t_cmmnds *)current->content;
+        printf("Command %d: ", cmd_index++);
+        for (int j = 0; cmd->cmd_array && cmd->cmd_array[j]; j++)
+        {
+            printf("%s ", cmd->cmd_array[j]);
+        }
+        printf("\n");
+        current = current->next;
+    }
 	if (i != 0 && i == array_length(uni->commands) && (uni->commands[i - 1]
 			&& !ft_strcmp(uni->commands[i - 1], "|")))
 		syntax_error(uni, "|");
