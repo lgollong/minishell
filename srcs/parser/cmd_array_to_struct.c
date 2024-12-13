@@ -6,7 +6,7 @@
 /*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 17:04:53 by lgollong          #+#    #+#             */
-/*   Updated: 2024/12/11 11:27:24 by rwegat           ###   ########.fr       */
+/*   Updated: 2024/12/13 11:54:02 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,10 @@ t_cmmnds	*create_cmmnd_struct(t_uni *uni)
 	cmmnd_struct->broken = 0;
 	cmmnd_struct->left = NULL;
 	cmmnd_struct->right = NULL;
+	cmmnd_struct->scope = uni->scope_p;
+	cmmnd_struct->type = 0;
+	if (uni->commands[0])
+		printf("Command t: %s, Scope: %d\n", uni->commands[0], cmmnd_struct->scope);
 	return (cmmnd_struct);
 }
 
@@ -108,8 +112,8 @@ t_list	*next_cmmnd_struct(t_uni *uni, t_list *last, int i)
 	else
 		close(tube[1]);
 	((t_cmmnds *)last->content)->inf = tube[0];
-	((t_cmmnds *)tmp->content)->right = (t_list *)last;
-	((t_cmmnds *)last->content)->left = (t_list *)tmp;
+	((t_cmmnds *)tmp->content)->right = (t_cmmnds *)last->content;
+	((t_cmmnds *)last->content)->left = (t_cmmnds *)tmp->content;
 	free(tube);
 	return (last);
 }
@@ -130,16 +134,20 @@ void	cmd_array_to_struct(t_uni *uni)
 	t_list	*last;
 
 	i = 0;
+	type = 0;
 	uni->cmd_lst = ft_lstnew(create_cmmnd_struct(uni));
 	last = uni->cmd_lst;
 	while (uni->stop == 0 && uni->commands[i]
 		&& last != NULL && last->content != NULL)
 	{
 		type = get_type(uni, i);
-		printf("Current command: %s, Type: %d\n", uni->commands[i], type);
+		if (type == PAR_OPEN)
+			uni->scope_p++;
+		else if (type == PAR_CLOSE)
+			uni->scope_p--;
+		printf("Scope %d\n", uni->scope_p);
 		if (type > 0 && type < 5 && ((t_cmmnds *)last->content)->broken == 0)
 			i = i + open_file_and_save_fd(uni, last->content, i, type);
-		//bonus
 		else if (type == AND && type == OR && ((t_cmmnds *)last->content)->broken == 0)
 			last = next_cmmnd_struct(uni, last, i);
 		else if (type == 0 && ((t_cmmnds *)last->content)->broken == 0)

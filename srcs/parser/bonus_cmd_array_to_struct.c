@@ -6,7 +6,7 @@
 /*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 15:56:29 by rwegat            #+#    #+#             */
-/*   Updated: 2024/12/10 23:41:34 by rwegat           ###   ########.fr       */
+/*   Updated: 2024/12/13 11:01:31 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ t_cmmnds	*create_cmmnd_struct(t_uni *uni)
 	cmmnd_struct->broken = 0;
 	cmmnd_struct->left = NULL;
 	cmmnd_struct->right = NULL;
+	cmmnd_struct->scope = uni->scope_p;
 	return (cmmnd_struct);
 }
 
@@ -127,6 +128,7 @@ void	cmd_array_to_struct(t_uni *uni)
 {
 	int			i;
 	int			type;
+	int 		*fd;
 	t_list		*last;
 
 	i = 0;
@@ -136,6 +138,10 @@ void	cmd_array_to_struct(t_uni *uni)
 		&& last != NULL && last->content != NULL)
 	{
 		type = get_type(uni, i);
+		if (type == PAR_OPEN)
+			uni->scope_p++;
+		else if (type == PAR_CLOSE)
+			uni->scope_p--;
 		printf("Current command: %s, Type: %d\n", uni->commands[i], type);
 		if (type > 0 && type < 5 && ((t_cmmnds *)last->content)->broken == 0)
 			i = i + open_file_and_save_fd(uni, last->content, i, type);

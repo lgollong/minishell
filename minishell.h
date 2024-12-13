@@ -6,7 +6,7 @@
 /*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/09 15:29:14 by lgollong          #+#    #+#             */
-/*   Updated: 2024/12/10 23:41:14 by rwegat           ###   ########.fr       */
+/*   Updated: 2024/12/12 23:29:49 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,5 +132,7 @@ char		**change_in_env(char *set, char *replace,
 
 //wildcard
 int		handle_wildcard(char *command, t_cmmnds *content);
+
+//parentheses
 
 #endif

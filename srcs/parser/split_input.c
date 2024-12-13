@@ -6,7 +6,7 @@
 /*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/06 15:25:26 by lgollong          #+#    #+#             */
-/*   Updated: 2024/11/21 10:37:13 by rwegat           ###   ########.fr       */
+/*   Updated: 2024/12/13 13:17:58 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,8 @@ unsigned int	ft_letter_count(const char *str, unsigned int i)
 	cut_allow_checker('x', 1);
 	if ((str[i] == '|' && str[i + 1] == '|') || (str[i] == '&' && str[i + 1] == '&'))
 		return (2);
-	if (ft_strchr("|<>", str[i]) != NULL)
+	if (ft_strchr("|<>", str[i]) != NULL
+	)
 		return (1);
 	while (str[i] != '\0')
 	{
@@ -135,12 +136,5 @@ char	**split_input(char *str)
 			i++;
 	}
 	cmd_array[wrd_cnt] = NULL;
-
-	// Debug message to print all split up words
-	for (i = 0; i < wrd_cnt; i++)
-	{
-		printf("Word %d: %s\n", i, cmd_array[i]);
-	}
-
 	return (cmd_array);
 }

@@ -6,7 +6,7 @@
 /*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 12:05:55 by tilman            #+#    #+#             */
-/*   Updated: 2024/11/20 18:21:27 by rwegat           ###   ########.fr       */
+/*   Updated: 2024/12/12 23:30:01 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,31 @@ void	set_dollar_underscore_env(t_uni *uni)
 		if (arr_len != 0)
 			uni->envp = change_in_env("_=",
 					ft_strdup(cmd_strct->cmd_array[arr_len - 1]), uni->envp, 0);
+	}
+}
+
+void	print_list(t_list *lst)
+{
+	t_list	*tmp;
+	t_cmmnds	*cmd;
+
+	(void)cmd;
+	tmp = lst;
+	while (tmp)
+	{
+		// cmd = tmp->content;
+		// printf("Command Array: ");
+		// if (cmd->cmd_array)
+		// {
+		// 	for (int i = 0; cmd->cmd_array[i]; i++)
+		// 	{
+		// 		printf("%s ", cmd->cmd_array[i]);
+		// 	}
+		// }
+		// printf("\n");
+		// printf("Type: %d\n", cmd->type);
+		// printf("Scope: %d\n", cmd->scope);
+		tmp = tmp->next;
 	}
 }
 

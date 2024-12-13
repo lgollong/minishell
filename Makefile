@@ -6,7 +6,7 @@
 #    By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/09 15:14:04 by lgollong          #+#    #+#              #
-#    Updated: 2024/12/12 15:58:47 by rwegat           ###   ########.fr        #
+#    Updated: 2024/12/12 23:29:40 by rwegat           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,7 +36,6 @@ SRCS =	srcs/main.c							\
 		srcs/parser/wildcard_bonus.c		\
 		\
 		srcs/executer/executer.c			\
-		srcs/parser/bonus_set_scope.c		\
 		\
 		srcs/helpers.c 						\
 		srcs/helpers2.c 					\

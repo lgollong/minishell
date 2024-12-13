@@ -6,7 +6,7 @@
 /*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 23:43:19 by rwegat            #+#    #+#             */
-/*   Updated: 2024/12/11 11:50:02 by rwegat           ###   ########.fr       */
+/*   Updated: 2024/12/13 13:27:03 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,30 +50,8 @@ int	is_not_executable(t_cmmnds	*cmd_strct, int builtin)
 	}
 	return (0);
 }
-void print_cmmnd_details(t_cmmnds *cmd)
-{
-	printf("Command Array: ");
-	if (cmd->cmd_array)
-	{
-		for (int i = 0; cmd->cmd_array[i]; i++)
-		{
-			printf("%s ", cmd->cmd_array[i]);
-		}
-	}
-	printf("\n");
-	printf("Command Path: %s\n", cmd->cmd_path ? cmd->cmd_path : "NULL");
-	printf("Input FD: %d\n", cmd->inf);
-	printf("Output FD: %d\n", cmd->outf);
-	printf("Broken: %d\n", cmd->broken);
-	printf("Type: %d\n", cmd->type);
-	printf("Exit Status: %d\n", cmd->exit_status);
-	printf("Scope: %d\n", cmd->scope);
-	printf("Left: %p\n", (void *)cmd->left);
-	printf("Right: %p\n", (void *)cmd->right);
-	printf("--------------------\n");
-}
 
-// 
+// skips commands that are not supposed to be executed (yet)
 void	logical_subshell(t_uni *uni, t_cmmnds **tmp)
 {
 	int		left_scope;
