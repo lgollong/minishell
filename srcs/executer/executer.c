@@ -6,7 +6,7 @@
 /*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 12:14:39 by tilman            #+#    #+#             */
-/*   Updated: 2024/12/12 13:56:54 by rwegat           ###   ########.fr       */
+/*   Updated: 2024/12/13 14:08:51 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,8 @@ void	run_cmmnds(void *content)
 	builtin = isbuiltin(cmd_strct);
 	if (is_not_executable(cmd_strct, builtin) == 1)
 		return ;
+	printf("Executing command: %s\n", cmd_strct->cmd_array[0]);
+	printf("Scope: %i\n", cmd_strct->scope);
 	cmd_strct->uni->pid = fork();
 	if (cmd_strct->uni->pid < 0)
 		return ;
@@ -108,7 +110,38 @@ void	wait_for_exitcode(t_uni *uni)
 		&& (!access(last->cmd_path, F_OK)
 			&& access(last->cmd_path, X_OK) < 0))
 		g_exitcode = 126;
+	uni->last_exit_status = g_exitcode;
 	return ;
+}
+
+// skips commands that are not supposed to be executed (yet)
+void	logical_subshell(t_uni *uni, t_cmmnds **tmp)
+{
+	int		left_scope;
+
+	left_scope = 0;
+	if (!(*tmp)->left)
+		return ;
+	if ((*tmp)->left->scope != (*tmp)->scope)
+	{
+		left_scope = (*tmp)->left->scope;
+		if ((*tmp)->left->type == OR && uni->last_exit_status == 0)
+		{
+			while ((*tmp) && (*tmp)->scope > left_scope)
+				*tmp = (*tmp)->right;
+		}
+		else if ((*tmp)->left->type == AND && uni->last_exit_status != 0)
+		{
+			while ((*tmp) && (*tmp)->scope > left_scope)
+				*tmp = (*tmp)->right;
+		}
+		if (!*tmp)
+			return ;
+	}
+	while (*tmp && (*tmp)->left->type == AND)
+		*tmp = (*tmp)->right;
+	while (*tmp && (*tmp)->left->type == OR)
+		*tmp = (*tmp)->right;
 }
 
 // start command execution
@@ -129,7 +162,15 @@ void	executer(t_uni *uni)
 	}
 	else
 	{
-		ft_lstiter(uni->cmd_lst, run_cmmnds);
+		t_list *current = uni->cmd_lst;
+		while (current)
+		{
+			cmd_strct = (t_cmmnds *)current->content;
+			logical_subshell(uni, &cmd_strct);
+			if (cmd_strct)
+				run_cmmnds(cmd_strct);
+			current = current->next;
+		}
 		ft_lstiter(uni->cmd_lst, close_fds);
 		wait_for_exitcode(uni);
 	}

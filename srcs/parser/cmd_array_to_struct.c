@@ -6,7 +6,7 @@
 /*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 17:04:53 by lgollong          #+#    #+#             */
-/*   Updated: 2024/12/13 11:54:02 by rwegat           ###   ########.fr       */
+/*   Updated: 2024/12/13 14:08:14 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,8 +81,6 @@ t_cmmnds	*create_cmmnd_struct(t_uni *uni)
 	cmmnd_struct->right = NULL;
 	cmmnd_struct->scope = uni->scope_p;
 	cmmnd_struct->type = 0;
-	if (uni->commands[0])
-		printf("Command t: %s, Scope: %d\n", uni->commands[0], cmmnd_struct->scope);
 	return (cmmnd_struct);
 }
 
@@ -145,11 +143,8 @@ void	cmd_array_to_struct(t_uni *uni)
 			uni->scope_p++;
 		else if (type == PAR_CLOSE)
 			uni->scope_p--;
-		printf("Scope %d\n", uni->scope_p);
 		if (type > 0 && type < 5 && ((t_cmmnds *)last->content)->broken == 0)
 			i = i + open_file_and_save_fd(uni, last->content, i, type);
-		else if (type == AND && type == OR && ((t_cmmnds *)last->content)->broken == 0)
-			last = next_cmmnd_struct(uni, last, i);
 		else if (type == 0 && ((t_cmmnds *)last->content)->broken == 0)
 		{
 			if (handle_wildcard(uni->commands[i], (t_cmmnds *)last->content))
