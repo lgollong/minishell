@@ -6,7 +6,7 @@
 /*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 14:15:52 by rwegat            #+#    #+#             */
-/*   Updated: 2024/12/14 12:18:49 by rwegat           ###   ########.fr       */
+/*   Updated: 2024/12/14 13:11:00 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,8 @@ t_list	*next_cmmnd_struct(t_uni *uni, t_list *last, int i)
 	last = ft_lstlast(uni->cmd_lst);
 	if (!last || !last->content)
 		exit(1);
+	((t_cmmnds *)tmp->content)->right = (t_cmmnds *)last->content;
+	((t_cmmnds *)last->content)->left = (t_cmmnds *)tmp->content;
 	tube = ft_calloc(2, sizeof(int));
 	if (!tube)
 		return (NULL);
@@ -110,8 +112,6 @@ t_list	*next_cmmnd_struct(t_uni *uni, t_list *last, int i)
 	else
 		close(tube[1]);
 	((t_cmmnds *)last->content)->inf = tube[0];
-	((t_cmmnds *)tmp->content)->right = (t_cmmnds *)last->content;
-	((t_cmmnds *)last->content)->left = (t_cmmnds *)tmp->content;
 	free(tube);
 	return (last);
 }
@@ -150,9 +150,7 @@ void	cmd_array_to_struct(t_uni *uni)
 			if (handle_wildcard(uni->commands[i], (t_cmmnds *)last->content))
 				cmmnd_to_struct(((t_cmmnds *)last->content), uni->commands[i]);
 		}
-		else if (type == PIPE)
-			last = next_cmmnd_struct(uni, last, i);
-		else if (type == AND || type == OR)
+		else if (type == PIPE || type == AND || type == OR)
 		{
 			((t_cmmnds *)last->content)->type = type;
 			last = next_cmmnd_struct(uni, last, i);
