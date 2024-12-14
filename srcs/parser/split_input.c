@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   split_input.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
+/*   By: elgollong <elgollong@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 14:15:23 by rwegat            #+#    #+#             */
-/*   Updated: 2024/12/14 12:18:04 by rwegat           ###   ########.fr       */
+/*   Updated: 2024/12/14 17:15:28 by elgollong        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "../../minishell.h"
 
@@ -67,8 +68,10 @@ unsigned int	ft_word_count(char *str)
 			if ((str[i] == '|' && str[i + 1] == '|') || (str[i] == '&' && str[i + 1] == '&'))
 				i += 2;
 			else
+				i++;
+			if (ft_strchr("<|>&()", str[i - 1]) == NULL)
 			{
-				while (str[i] && str[i] != ' ' && cut_allow_checker(str[i], 0) == 0 && 
+				while (ft_strchr("<|>&() ", str[i]) == NULL && 
 				!((str[i] == '|' && str[i + 1] == '|') || (str[i] == '&' && str[i + 1] == '&')))
 					i++;
 			}
@@ -90,17 +93,12 @@ unsigned int	ft_letter_count(const char *str, unsigned int i)
 	cut_allow_checker('x', 1);
 	if ((str[i] == '|' && str[i + 1] == '|') || (str[i] == '&' && str[i + 1] == '&'))
 		return (2);
-	if (ft_strchr("|<>", str[i]) != NULL)
+	if (ft_strchr("<|>&()", str[i]) != NULL)
 		return (1);
 	while (str[i] != '\0')
 	{
-		if (((str[i] == '|' && str[i + 1] == '|') || (str[i] == '&' && str[i + 1] == '&')) 
-		&& cut_allow_checker(str[i], 0) == 0)
-		{
-			i++;
-			break ;
-		}
-		else if (cut_allow_checker(str[i], 0) == 0 && ft_strchr("|<> ", str[i]) != NULL)
+		if (cut_allow_checker(str[i], 0) == 0
+			&& ft_strchr("<|>&() ", str[i]) != NULL)
 			break ;
 		i++;
 		k++;

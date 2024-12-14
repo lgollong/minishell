@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
+/*   By: elgollong <elgollong@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 14:16:32 by rwegat            #+#    #+#             */
-/*   Updated: 2024/12/14 13:35:20 by rwegat           ###   ########.fr       */
+/*   Updated: 2024/12/14 16:36:32 by elgollong        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,10 +70,10 @@ void	run_cmmnds(void *content)
 		return ;
 	if (cmd_strct->uni->pid == 0)
 	{
-		if (builtin)
-			exec_builtin(cmd_strct, builtin, 1);
 		dup2(cmd_strct->inf, 0);
 		dup2(cmd_strct->outf, 1);
+		if (builtin)
+			exec_builtin(cmd_strct, builtin, 1);
 		ft_lstiter(cmd_strct->uni->cmd_lst, close_fds);
 		execve(cmd_strct->cmd_path, cmd_strct->cmd_array,
 			cmd_strct->uni->envp);
