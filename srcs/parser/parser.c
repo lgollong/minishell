@@ -6,7 +6,7 @@
 /*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 12:05:55 by tilman            #+#    #+#             */
-/*   Updated: 2024/12/12 23:30:01 by rwegat           ###   ########.fr       */
+/*   Updated: 2024/12/14 12:17:33 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ void	print_list(t_list *lst)
 		// 		printf("%s ", cmd->cmd_array[i]);
 		// 	}
 		// }
-		// printf("\n");
+		// ("\n");
 		// printf("Type: %d\n", cmd->type);
 		// printf("Scope: %d\n", cmd->scope);
 		tmp = tmp->next;

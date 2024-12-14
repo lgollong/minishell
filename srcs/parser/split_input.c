@@ -6,7 +6,7 @@
 /*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 14:15:23 by rwegat            #+#    #+#             */
-/*   Updated: 2024/12/13 14:25:09 by rwegat           ###   ########.fr       */
+/*   Updated: 2024/12/14 12:18:04 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,10 +136,10 @@ char	**split_input(char *str)
 	}
 	cmd_array[wrd_cnt] = NULL;
 
-	printf("Token list:\n");
+	printf("\033[31mToken list:\033[0m\n");
     for (i = 0; i < wrd_cnt; i++)
     {
-        printf("Token %d: %s\n", i, cmd_array[i]);
+        printf("\033[31mToken %d: %s\033[0m\n", i, cmd_array[i]);
     }
 	printf("\n");
 	return (cmd_array);

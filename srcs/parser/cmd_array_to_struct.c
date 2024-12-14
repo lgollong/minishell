@@ -6,7 +6,7 @@
 /*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 14:15:52 by rwegat            #+#    #+#             */
-/*   Updated: 2024/12/13 14:25:34 by rwegat           ###   ########.fr       */
+/*   Updated: 2024/12/14 12:18:49 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,7 +150,7 @@ void	cmd_array_to_struct(t_uni *uni)
 			if (handle_wildcard(uni->commands[i], (t_cmmnds *)last->content))
 				cmmnd_to_struct(((t_cmmnds *)last->content), uni->commands[i]);
 		}
-		else if (type == 5)
+		else if (type == PIPE)
 			last = next_cmmnd_struct(uni, last, i);
 		else if (type == AND || type == OR)
 		{
@@ -160,16 +160,16 @@ void	cmd_array_to_struct(t_uni *uni)
 		i++;
 	}
     // Debugging print to display the command structure
-    printf("Command structure:\n");
+    printf("\033[31mCommand structure:\033[0m\n");
     t_list *current = uni->cmd_lst;
     int cmd_index = 0;
     while (current)
     {
         t_cmmnds *cmd = (t_cmmnds *)current->content;
-        printf("Command %d: ", cmd_index++);
+        printf("\033[31mCommand %d: \033[0m", cmd_index++);
         for (int j = 0; cmd->cmd_array && cmd->cmd_array[j]; j++)
         {
-            printf("%s ", cmd->cmd_array[j]);
+            printf("\033[31m%s \033[0m", cmd->cmd_array[j]);
         }
         printf("\n");
         current = current->next;
