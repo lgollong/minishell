@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+         #
+#    By: elgollong <elgollong@student.42.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/09 15:14:04 by lgollong          #+#    #+#              #
-#    Updated: 2024/12/12 23:29:40 by rwegat           ###   ########.fr        #
+#    Updated: 2024/12/14 17:18:49 by elgollong        ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,10 +15,15 @@ CC = cc
 CFLAGS = -Wall -Werror -Wextra
 LIBFTDIR = ./libft
 LIBFT = ./libft/libft.a
-LDFLAGS		= -L/Users/$(USER)/.brew/opt/readline/lib
-CPPFLAGS	= -I/Users/$(USER)/.brew/opt/readline/include
-# LDFLAGS		= -L/opt/homebrew/Cellar/readline/8.2.13/lib
-# CPPFLAGS	= -I/opt/homebrew/Cellar/readline/8.2.13/include
+USER := $(shell whoami)
+
+ifeq ($(USER), elgollong)
+	LDFLAGS  = -L/opt/homebrew/Cellar/readline/8.2.13/lib
+	CPPFLAGS = -I/opt/homebrew/Cellar/readline/8.2.13/include
+else
+	LDFLAGS  = -L/Users/$(USER)/.brew/opt/readline/lib
+	CPPFLAGS = -I/Users/$(USER)/.brew/opt/readline/include
+endif
 
 SRCS =	srcs/main.c							\
 		srcs/initialisation.c				\
