@@ -6,7 +6,7 @@
 /*   By: elgollong <elgollong@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 14:16:32 by rwegat            #+#    #+#             */
-/*   Updated: 2024/12/14 16:36:32 by elgollong        ###   ########.fr       */
+/*   Updated: 2024/12/14 18:07:08 by elgollong        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void	run_cmmnds(void *content)
 	builtin = isbuiltin(cmd_strct);
 	if (is_not_executable(cmd_strct, builtin) == 1)
 		return ;
-	printf("\033[31mExecuting command: %s\033[0m\n\n", cmd_strct->cmd_array[0]);
+	printf("\033[31mExecuting command: %s\033[0m\n", cmd_strct->cmd_array[0]);
 	printf("\033[31mScope: %i\033[0m\n\n", cmd_strct->scope);
 	cmd_strct->uni->pid = fork();
 	if (cmd_strct->uni->pid < 0)
@@ -171,10 +171,11 @@ void	executer(t_uni *uni)
 			logical_subshell(uni, &cmd_strct);
 			if (cmd_strct)
 			{
-				printf("\033[31mattempting to run cmd\033[0m\n\n");
+				printf("\033[31mattempting to run cmd\033[0m\n");
 				run_cmmnds(cmd_strct);
 			}
 			current = current->next;
+			wait_for_exitcode(uni);
 		}
 		ft_lstiter(uni->cmd_lst, close_fds);
 		wait_for_exitcode(uni);

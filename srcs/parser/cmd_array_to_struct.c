@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_array_to_struct.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
+/*   By: elgollong <elgollong@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 14:15:52 by rwegat            #+#    #+#             */
-/*   Updated: 2024/12/14 13:11:00 by rwegat           ###   ########.fr       */
+/*   Updated: 2024/12/14 17:59:04 by elgollong        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,11 +107,12 @@ t_list	*next_cmmnd_struct(t_uni *uni, t_list *last, int i)
 		free(tube);
 		return (NULL);
 	}
-	if (((t_cmmnds *)tmp->content)->outf == 1)
+	if (((t_cmmnds *)tmp->content)->outf == 1 && ((t_cmmnds *)tmp->content)->type != AND && ((t_cmmnds *)tmp->content)->type != OR)
 		((t_cmmnds *)tmp->content)->outf = tube[1];
 	else
 		close(tube[1]);
-	((t_cmmnds *)last->content)->inf = tube[0];
+	if ((((t_cmmnds *)tmp->content)->type != AND && ((t_cmmnds *)tmp->content)->type != OR))
+		((t_cmmnds *)last->content)->inf = tube[0];
 	free(tube);
 	return (last);
 }
@@ -172,6 +173,7 @@ void	cmd_array_to_struct(t_uni *uni)
         printf("\n");
         current = current->next;
     }
+	printf("\n");
 	if (i != 0 && i == array_length(uni->commands) && (uni->commands[i - 1]
 			&& !ft_strcmp(uni->commands[i - 1], "|")))
 		syntax_error(uni, "|");
