@@ -6,13 +6,13 @@
 #    By: elgollong <elgollong@student.42.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/09 15:14:04 by lgollong          #+#    #+#              #
-#    Updated: 2024/12/14 17:18:49 by elgollong        ###   ########.fr        #
+#    Updated: 2024/12/15 19:33:59 by elgollong        ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 CC = cc
-CFLAGS = -Wall -Werror -Wextra
+CFLAGS = -Wall -Werror -Wextra -g -fsanitize=address
 LIBFTDIR = ./libft
 LIBFT = ./libft/libft.a
 USER := $(shell whoami)
@@ -64,7 +64,7 @@ $(LIBFT):
 	@echo "\033[1;32m ✅ [libft archive created]\033[0m"
 
 $(NAME): $(LIBFT) $(OBJS)
-	@$(CC) $(OBJS) $(LDFLAGS) $(CPPFLAGS) -lreadline -L$(LIBFTDIR) -lft -o $(NAME)
+	@$(CC) $(OBJS) $(LDFLAGS) $(CPPFLAGS) -g -fsanitize=address -lreadline -L$(LIBFTDIR) -lft -o $(NAME)
 	@echo "\033[1;32m ✅ [minishell created]\033[0m"
 
 clean:

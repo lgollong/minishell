@@ -6,7 +6,7 @@
 /*   By: elgollong <elgollong@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 14:16:32 by rwegat            #+#    #+#             */
-/*   Updated: 2024/12/14 18:07:08 by elgollong        ###   ########.fr       */
+/*   Updated: 2024/12/15 22:35:11 by elgollong        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,24 +63,35 @@ void	run_cmmnds(void *content)
 	builtin = isbuiltin(cmd_strct);
 	if (is_not_executable(cmd_strct, builtin) == 1)
 		return ;
-	printf("\033[31mExecuting command: %s\033[0m\n", cmd_strct->cmd_array[0]);
-	printf("\033[31mScope: %i\033[0m\n\n", cmd_strct->scope);
-	cmd_strct->uni->pid = fork();
-	if (cmd_strct->uni->pid < 0)
-		return ;
-	if (cmd_strct->uni->pid == 0)
+	// printf("\033[31mExecuting command: %s, %s\033[0m\n", cmd_strct->cmd_array[0], cmd_strct->cmd_array[1]);
+	// printf("\033[31mScope: %i\033[0m\n\n", cmd_strct->scope);
+	if (!builtin || (cmd_strct->left && cmd_strct->left->type == PIPE))
 	{
-		dup2(cmd_strct->inf, 0);
-		dup2(cmd_strct->outf, 1);
-		if (builtin)
-			exec_builtin(cmd_strct, builtin, 1);
-		ft_lstiter(cmd_strct->uni->cmd_lst, close_fds);
-		execve(cmd_strct->cmd_path, cmd_strct->cmd_array,
-			cmd_strct->uni->envp);
-		close(0);
-		close(1);
-		exit_minishell(2, cmd_strct->uni);
+		cmd_strct->uni->pid = fork();
+		if (cmd_strct->uni->pid < 0)
+			return ;
+		if (cmd_strct->uni->pid == 0)
+		{
+			if (builtin)
+				exec_builtin(cmd_strct, builtin, 1);
+			dup2(cmd_strct->inf, 0);
+			dup2(cmd_strct->outf, 1);
+			ft_lstiter(cmd_strct->uni->cmd_lst, close_fds);
+			execve(cmd_strct->cmd_path, cmd_strct->cmd_array,
+				cmd_strct->uni->envp);	
+			exit_minishell(2, cmd_strct->uni);
+		}
+		else
+		{
+			int wstatus;
+			if (waitpid(cmd_strct->uni->pid, &wstatus, WNOHANG) == -1)
+				return ;
+			if (WIFEXITED(wstatus))
+				g_exitcode = WEXITSTATUS(wstatus);
+		}
 	}
+	else
+		g_exitcode = exec_builtin(cmd_strct, builtin, 0);
 }
 
 // wait for the subprocesses and gets exitcode
@@ -110,15 +121,15 @@ void	wait_for_exitcode(t_uni *uni)
 		&& (!access(last->cmd_path, F_OK)
 			&& access(last->cmd_path, X_OK) < 0))
 		g_exitcode = 126;
-	uni->last_exit_status = g_exitcode;
 	return ;
 }
 
 // skips commands that are not supposed to be executed (&& and ||)
 // skips commands of higher scope
-void	logical_subshell(t_uni *uni, t_cmmnds **tmp)
+void	logical_subshell(t_cmmnds **tmp, t_list **current)
 {
 	int		left_scope;
+	(void)current;
 
 	left_scope = 0;
 	if (!(*tmp)->left)
@@ -126,25 +137,35 @@ void	logical_subshell(t_uni *uni, t_cmmnds **tmp)
 	if ((*tmp)->left->scope != (*tmp)->scope)
 	{
 		left_scope = (*tmp)->left->scope;
-		if ((*tmp)->left->type == OR && !uni->last_exit_status)
+		if ((*tmp)->left->type == OR && !g_exitcode)
 		{
-			while ((*tmp) && (*tmp)->scope > left_scope)
+			while ((*tmp) && (*tmp)->scope > left_scope){
 				*tmp = (*tmp)->right;
+				*current = (*current)->next;
+			}
 		}
-		else if ((*tmp)->left->type == AND && uni->last_exit_status)
+		else if ((*tmp)->left->type == AND && g_exitcode)
 		{
-			while ((*tmp) && (*tmp)->scope > left_scope)
+			while ((*tmp) && (*tmp)->scope > left_scope){
 				*tmp = (*tmp)->right;
+				*current = (*current)->next;
+			}
 		}
 		if (!*tmp)
 			return ;
 	}
-	while (*tmp && (*tmp)->left && (*tmp)->left->type == AND && uni->last_exit_status)
+	while (*tmp && (*tmp)->left && (*tmp)->left->type == AND && g_exitcode)
+	{
 		*tmp = (*tmp)->right;
-	while (*tmp && (*tmp)->left && (*tmp)->left->type == OR && !uni->last_exit_status)
+		*current = (*current)->next;
+	}
+	while (*tmp && (*tmp)->left && (*tmp)->left->type == OR && !g_exitcode)
+	{
 		*tmp = (*tmp)->right;
-	if (*tmp && (*tmp)->cmd_array)
-		printf("\033[31mSubshell: %s\033[0m\n", (*tmp)->cmd_array[0]);
+		*current = (*current)->next;
+	}
+	// if (*tmp && (*tmp)->cmd_array)
+		// printf("\033[31mSubshell: %s\033[0m\n", (*tmp)->cmd_array[0]);
 }
 
 // start command execution
@@ -168,14 +189,15 @@ void	executer(t_uni *uni)
 		while (current)
 		{
 			cmd_strct = (t_cmmnds *)current->content;
-			logical_subshell(uni, &cmd_strct);
-			if (cmd_strct)
+			logical_subshell(&cmd_strct, &current);
+			if (cmd_strct && current)
 			{
-				printf("\033[31mattempting to run cmd\033[0m\n");
+				// printf("\033[31mattempting to run cmd\033[0m\n");
 				run_cmmnds(cmd_strct);
+				// printf("exitcode %i\n", uni->last_exit_status);
+				current = current->next;
+				// printf("---Child exited with code: %d\n", g_exitcode);
 			}
-			current = current->next;
-			wait_for_exitcode(uni);
 		}
 		ft_lstiter(uni->cmd_lst, close_fds);
 		wait_for_exitcode(uni);
