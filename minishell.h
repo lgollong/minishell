@@ -6,7 +6,7 @@
 /*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/09 15:29:14 by lgollong          #+#    #+#             */
-/*   Updated: 2024/12/12 23:29:49 by rwegat           ###   ########.fr       */
+/*   Updated: 2024/12/18 11:53:31 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ char		**split_input(char *str);
 void		handle_metachars(t_uni *uni, char **array);
 char		*check_for_metachars(t_uni *uni, char *str, int *j, int *cnt);
 char		*replace_part_of_str(char *str, int start,
-									int end, char *rep_prt);
+				int end, char *rep_prt);
 void		remove_quotes_from_structs(void *content);
 void		rem_quote_from_str(char *str, int *j);
 int			cut_allow_checker(char mark, int reset);
@@ -131,7 +131,7 @@ char		**change_in_env(char *set, char *replace,
 				char **envp, int free_set);
 
 //wildcard
-int		handle_wildcard(char *command, t_cmmnds *content);
+int			handle_wildcard(char *command, t_cmmnds *content);
 
 //parentheses
 

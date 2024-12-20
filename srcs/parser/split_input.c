@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split_input.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elgollong <elgollong@student.42.fr>        +#+  +:+       +#+        */
+/*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 14:15:23 by rwegat            #+#    #+#             */
-/*   Updated: 2024/12/15 13:22:09 by elgollong        ###   ########.fr       */
+/*   Updated: 2024/12/18 10:49:24 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,12 +133,5 @@ char	**split_input(char *str)
 			i++;
 	}
 	cmd_array[wrd_cnt] = NULL;
-
-	printf("\033[31mToken list:\033[0m\n");
-    for (i = 0; i < wrd_cnt; i++)
-    {
-        printf("\033[31mToken %d: %s\033[0m\n", i, cmd_array[i]);
-    }
-	printf("\n");
 	return (cmd_array);
 }

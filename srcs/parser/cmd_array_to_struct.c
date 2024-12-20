@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_array_to_struct.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elgollong <elgollong@student.42.fr>        +#+  +:+       +#+        */
+/*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 14:15:52 by rwegat            #+#    #+#             */
-/*   Updated: 2024/12/15 20:36:33 by elgollong        ###   ########.fr       */
+/*   Updated: 2024/12/20 23:32:27 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,44 +150,15 @@ void	cmd_array_to_struct(t_uni *uni)
 			if (handle_wildcard(uni->commands[i], (t_cmmnds *)last->content))
 				cmmnd_to_struct(((t_cmmnds *)last->content), uni->commands[i++]);
 		}
-		else if (type == PIPE || type == AND || type == OR){
-			((t_cmmnds *)last->content)->type = type;
+		else if (type == PIPE || type == AND || type == OR)
+		{
 			last = next_cmmnd_struct(uni, last, i++);
+			if (last && last->content)
+				((t_cmmnds *)last->content)->type = type;
 		}
 		else
 			i++;
-		// if (type > 0 && type < 5 && ((t_cmmnds *)last->content)->broken == 0)
-		// 	i = i + open_file_and_save_fd(uni, last->content, i, type);
-		// else if (type == 0 && ((t_cmmnds *)last->content)->broken == 0)
-		// {
-		// 	if (handle_wildcard(uni->commands[i], (t_cmmnds *)last->content))
-		// 		cmmnd_to_struct(((t_cmmnds *)last->content), uni->commands[i]);
-		// }
-		// else if (type == PIPE || type == AND || type == OR)
-		// {
-		// 	((t_cmmnds *)last->content)->type = type;
-		// 	last = next_cmmnd_struct(uni, last, i);
-		// }
-		// printf("index i: %i\n", i);
-		// printf("commandslen: %s\n", uni->commands[i]);
-		// i++;
 	}
-    // Debugging print to display the command structure
-    printf("\033[31mCommand structure:\033[0m\n");
-    t_list *current = uni->cmd_lst;
-    int cmd_index = 0;
-    while (current)
-    {
-        t_cmmnds *cmd = (t_cmmnds *)current->content;
-        printf("\033[31mCommand %d: \033[0m", cmd_index++);
-        for (int j = 0; cmd->cmd_array && cmd->cmd_array[j]; j++)
-        {
-            printf("\033[31m%s \033[0m", cmd->cmd_array[j]);
-        }
-        printf("\n");
-        current = current->next;
-    }
-	printf("\n");
 	if (i != 0 && i == array_length(uni->commands) && (uni->commands[i - 1]
 			&& !ft_strcmp(uni->commands[i - 1], "|")))
 		syntax_error(uni, "|");
