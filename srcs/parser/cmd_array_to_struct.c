@@ -6,7 +6,7 @@
 /*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 14:15:52 by rwegat            #+#    #+#             */
-/*   Updated: 2024/12/20 23:32:27 by rwegat           ###   ########.fr       */
+/*   Updated: 2024/12/21 16:36:36 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,9 +152,9 @@ void	cmd_array_to_struct(t_uni *uni)
 		}
 		else if (type == PIPE || type == AND || type == OR)
 		{
-			last = next_cmmnd_struct(uni, last, i++);
 			if (last && last->content)
 				((t_cmmnds *)last->content)->type = type;
+			last = next_cmmnd_struct(uni, last, i++);
 		}
 		else
 			i++;

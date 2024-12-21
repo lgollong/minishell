@@ -1,0 +1,24 @@
+
+1. && and || with ()
+
+
+(echo "Fail" | grep "Pass") && echo "This won't print" || (echo "Outer success" | grep "success")
+-> result:		This won't print Outer success
+-> expected:	Outer success
+
+echo "Test 2" | grep "Fail" && echo "This won't print" || echo "Fallback executed"
+-> result:		This won't print Fallback executed
+-> expected:	Fallback executed
+
+echo "First" | grep "NoMatch" || echo "Fallback" | grep "Fallback" && echo "Final success"
+-> result:		Fallback Final success
+-> expected:	Fallback Final Success
+
+echo "Alpha" | grep "Alpha" && echo "Bravo" | grep "Charlie" || echo "Delta" | grep "Delta"
+-> result:		Bravo Delta DOESNT EXIT
+-> expected:	Alpha Delta
+
+echo "Test 1" | grep "Test" && echo "Pipe succeeded" || echo "Pipe failed"
+-> result:		Pipe succeeded Pipe failed 
+-> expected:	Test 1 Pipe succeeded
+
