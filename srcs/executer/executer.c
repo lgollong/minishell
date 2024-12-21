@@ -6,7 +6,7 @@
 /*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 14:16:32 by rwegat            #+#    #+#             */
-/*   Updated: 2024/12/21 17:20:34 by rwegat           ###   ########.fr       */
+/*   Updated: 2024/12/21 17:32:42 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,10 +71,12 @@ void	run_cmmnds(void *content)
 			return ;
 		if (cmd_strct->uni->pid == 0)
 		{
+			/*
 			printf("\tChild process running with PID: %d, Command: %s, Arguments: ", getpid(), cmd_strct->cmd_array ? cmd_strct->cmd_array[0] : "NULL");
 			for (int i = 1; cmd_strct->cmd_array && cmd_strct->cmd_array[i]; i++)
 				printf("%s ", cmd_strct->cmd_array[i]);
 			printf("\n");
+			*/
 			if (builtin)
 				exec_builtin(cmd_strct, builtin, 1);
 			dup2(cmd_strct->inf, 0);
@@ -87,16 +89,20 @@ void	run_cmmnds(void *content)
 		else
 		{
 			int wstatus;
+			/*
 			printf("\tParent process continues with PID: %d, Command: %s, Arguments: ", getpid(), cmd_strct->cmd_array ? cmd_strct->cmd_array[0] : "NULL");
 			for (int i = 1; cmd_strct->cmd_array && cmd_strct->cmd_array[i]; i++)
 				printf("%s ", cmd_strct->cmd_array[i]);
 			printf("\n");
+			*/
 			if (cmd_strct && cmd_strct->type == PIPE)
 			{
+				/*
 				printf("\tWaiting for pipe, Command: %s, Arguments: ", cmd_strct->cmd_array ? cmd_strct->cmd_array[0] : "NULL");
 				for (int i = 1; cmd_strct->cmd_array && cmd_strct->cmd_array[i]; i++)
 					printf("%s ", cmd_strct->cmd_array[i]);
 				printf("\n");
+				*/
 				if (waitpid(cmd_strct->uni->pid, &wstatus, WNOHANG) == -1)
 					return;
 			}
@@ -112,19 +118,23 @@ void	run_cmmnds(void *content)
 			if (WIFEXITED(wstatus))
 			{
 				g_exitcode = WEXITSTATUS(wstatus);
+				/*
 				printf("\tChild process with PID: %d, Command: %s, Arguments: ", cmd_strct->uni->pid, cmd_strct->cmd_array ? cmd_strct->cmd_array[0] : "NULL");
 				for (int i = 1; cmd_strct->cmd_array && cmd_strct->cmd_array[i]; i++)
 					printf("%s ", cmd_strct->cmd_array[i]);
 				printf("exited with code: %d\n", g_exitcode);
+				*/
 			}
 		}
 	}
 	else
 	{
+		/*
 		printf("\tExecuting builtin, Command: %s, Arguments: ", cmd_strct->cmd_array ? cmd_strct->cmd_array[0] : "NULL");
 		for (int i = 1; cmd_strct->cmd_array && cmd_strct->cmd_array[i]; i++)
 			printf("%s ", cmd_strct->cmd_array[i]);
 		printf("\n");
+		*/
 		g_exitcode = exec_builtin(cmd_strct, builtin, 0);
 	}
 }
@@ -212,6 +222,7 @@ void	executer(t_uni *uni)
 		return ;
 	signal(SIGQUIT, &quit_handler);
 	cmd_strct = (t_cmmnds *)uni->cmd_lst->content;
+	/*
 	t_list *temp = uni->cmd_lst;
 	while (temp)
 	{
@@ -229,6 +240,7 @@ void	executer(t_uni *uni)
 		temp = temp->next;
 	}
 	printf("\tParent process running with PID: %d\n", getpid());
+	*/
 	if (ft_lstsize(uni->cmd_lst) == 1 && isbuiltin(cmd_strct))
 	{
 		g_exitcode = exec_builtin(cmd_strct, isbuiltin(cmd_strct), 0);
@@ -251,3 +263,4 @@ void	executer(t_uni *uni)
 		wait_for_exitcode(uni);
 	}
 }
+
