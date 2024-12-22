@@ -6,7 +6,7 @@
 /*   By: elgollong <elgollong@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 14:16:32 by rwegat            #+#    #+#             */
-/*   Updated: 2024/12/22 16:27:13 by elgollong        ###   ########.fr       */
+/*   Updated: 2024/12/22 16:33:08 by elgollong        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,10 +66,8 @@ void	run_cmmnds(void *content)
 	if (is_not_executable(cmd_strct, builtin) == 1)
 		return ;
 	// printf("\033[31mExecuting command: %s, %s\033[0m\n", cmd_strct->cmd_array[0], cmd_strct->cmd_array[1]);
-	// printf("\033[31mScope: %i\033[0m\n", cmd_strct->scope);
-	// if (cmd_strct)
-		// printf("------cmd type: %i\n", cmd_strct->type);
-	if (!builtin || (cmd_strct && cmd_strct->type == PIPE))
+	// printf("\033[31mScope: %i\033[0m\n\n", cmd_strct->scope);
+	if (!builtin || (cmd_strct->left && cmd_strct->left->type == PIPE))
 	{
 		cmd_strct->uni->pid = fork();
 		if (cmd_strct->uni->pid < 0)
@@ -88,25 +86,8 @@ void	run_cmmnds(void *content)
 		else
 		{
 			int wstatus;
-			if (cmd_strct->uni->pid > 0)
-			{
-				if (waitpid(cmd_strct->uni->pid, &wstatus, 0) != -1)
-					return ;
-				// if (cmd_strct->inf != 0 && cmd_strct->outf != 1){
-				// close(cmd_strct->inf);
-				// close(cmd_strct->outf);
-				// }
-			}
-			// else
-			// {
-			// 	if (waitpid(cmd_strct->uni->pid, &wstatus, 0) == -1)
-			// 		return;
-			// 	if (cmd_strct->inf != 0 && cmd_strct->outf != 1){
-			// 		close(cmd_strct->inf);
-			// 		close(cmd_strct->outf);
-			// 	}
-			// }
-			// g_exitcode = exitcode;
+			if (waitpid(cmd_strct->uni->pid, &wstatus, WNOHANG) == -1)
+				return ;
 			if (WIFEXITED(wstatus))
 				g_exitcode = WEXITSTATUS(wstatus);
 			cmd_strct->uni->pid = -1;
