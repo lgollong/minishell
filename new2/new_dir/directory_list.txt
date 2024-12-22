@@ -1,0 +1,3 @@
+total 8
+-rw-r--r--  1 elgollong  staff   0 22 Dez 12:54 directory_list.txt
+-rw-r--r--  1 elgollong  staff  28 22 Dez 12:54 file1.txt

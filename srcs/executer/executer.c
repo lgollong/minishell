@@ -6,7 +6,7 @@
 /*   By: elgollong <elgollong@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 14:16:32 by rwegat            #+#    #+#             */
-/*   Updated: 2024/12/16 13:31:41 by elgollong        ###   ########.fr       */
+/*   Updated: 2024/12/22 16:27:13 by elgollong        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@ void	close_fds(void *content)
 	t_cmmnds	*cmd_strct;
 
 	cmd_strct = (t_cmmnds *)content;
-	if (cmd_strct->inf != 0 && cmd_strct->inf != -1)
+	if (cmd_strct->inf != -1 && cmd_strct->inf != 0)
 		close(cmd_strct->inf);
-	if (cmd_strct->outf != 1 && cmd_strct->outf != -1)
+	if (cmd_strct->outf != -1 && cmd_strct->outf != 1)
 		close(cmd_strct->outf);
 }
 
@@ -56,7 +56,9 @@ void	run_cmmnds(void *content)
 {
 	t_cmmnds	*cmd_strct;
 	int			builtin;
+	// int			exitcode;
 
+	// exitcode = -1;
 	cmd_strct = (t_cmmnds *)content;
 	if (cmd_strct->uni->stop == 1)
 		return ;
@@ -65,11 +67,9 @@ void	run_cmmnds(void *content)
 		return ;
 	// printf("\033[31mExecuting command: %s, %s\033[0m\n", cmd_strct->cmd_array[0], cmd_strct->cmd_array[1]);
 	// printf("\033[31mScope: %i\033[0m\n", cmd_strct->scope);
-	// if (cmd_strct->left)
-	// 	printf("left type: %i\n", cmd_strct->left->type);
-	// if (cmd_strct->right)
-	// 	printf("right type: %i\n", cmd_strct->right->type);
-	if (!builtin || (cmd_strct->left && cmd_strct->left->type == PIPE))
+	// if (cmd_strct)
+		// printf("------cmd type: %i\n", cmd_strct->type);
+	if (!builtin || (cmd_strct && cmd_strct->type == PIPE))
 	{
 		cmd_strct->uni->pid = fork();
 		if (cmd_strct->uni->pid < 0)
@@ -88,21 +88,32 @@ void	run_cmmnds(void *content)
 		else
 		{
 			int wstatus;
-			if (cmd_strct->left && cmd_strct->left->type == PIPE)
+			if (cmd_strct->uni->pid > 0)
 			{
-				if (waitpid(cmd_strct->uni->pid, &wstatus, WNOHANG) == -1)
-					return;
+				if (waitpid(cmd_strct->uni->pid, &wstatus, 0) != -1)
+					return ;
+				// if (cmd_strct->inf != 0 && cmd_strct->outf != 1){
+				// close(cmd_strct->inf);
+				// close(cmd_strct->outf);
+				// }
 			}
-			else if (cmd_strct->type == AND || cmd_strct->type == OR)
-			{
-				if (waitpid(cmd_strct->uni->pid, &wstatus, 0) == -1)
-			    	return;
-			}
+			// else
+			// {
+			// 	if (waitpid(cmd_strct->uni->pid, &wstatus, 0) == -1)
+			// 		return;
+			// 	if (cmd_strct->inf != 0 && cmd_strct->outf != 1){
+			// 		close(cmd_strct->inf);
+			// 		close(cmd_strct->outf);
+			// 	}
+			// }
+			// g_exitcode = exitcode;
 			if (WIFEXITED(wstatus))
 				g_exitcode = WEXITSTATUS(wstatus);
+			cmd_strct->uni->pid = -1;
 		}
 	}
-	else
+	else 
+		// (builtin && ((cmd_strct && cmd_strct->type == AND) || (cmd_strct && cmd_strct->type == OR)))
 		g_exitcode = exec_builtin(cmd_strct, builtin, 0);
 }
 
@@ -176,8 +187,6 @@ void	logical_subshell(t_cmmnds **tmp, t_list **current)
 		*tmp = (*tmp)->right;
 		*current = (*current)->next;
 	}
-	// if (*tmp && (*tmp)->cmd_array)
-		// printf("\033[31mSubshell: %s\033[0m\n", (*tmp)->cmd_array[0]);
 }
 
 // start command execution

@@ -6,7 +6,7 @@
 /*   By: elgollong <elgollong@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 14:15:52 by rwegat            #+#    #+#             */
-/*   Updated: 2024/12/15 20:36:33 by elgollong        ###   ########.fr       */
+/*   Updated: 2024/12/22 16:20:29 by elgollong        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,8 +111,10 @@ t_list	*next_cmmnd_struct(t_uni *uni, t_list *last, int i)
 		((t_cmmnds *)tmp->content)->outf = tube[1];
 	else
 		close(tube[1]);
-	if ((((t_cmmnds *)tmp->content)->type != AND && ((t_cmmnds *)tmp->content)->type != OR))
+	if (((t_cmmnds *)tmp->content)->inf == 0 && ((t_cmmnds *)tmp->content)->type != AND && ((t_cmmnds *)tmp->content)->type != OR)
 		((t_cmmnds *)last->content)->inf = tube[0];
+	else
+		close(tube[0]);
 	free(tube);
 	return (last);
 }
@@ -148,29 +150,16 @@ void	cmd_array_to_struct(t_uni *uni)
 			i = i + open_file_and_save_fd(uni, last->content, i, type);
 		else if (type == 0 && ((t_cmmnds *)last->content)->broken == 0){
 			if (handle_wildcard(uni->commands[i], (t_cmmnds *)last->content))
-				cmmnd_to_struct(((t_cmmnds *)last->content), uni->commands[i++]);
+				cmmnd_to_struct(((t_cmmnds *)last->content), uni->commands[i]);
+			i++;
 		}
 		else if (type == PIPE || type == AND || type == OR){
-			((t_cmmnds *)last->content)->type = type;
+			if (last && last->content)
+				((t_cmmnds *)last->content)->type = type;
 			last = next_cmmnd_struct(uni, last, i++);
 		}
 		else
 			i++;
-		// if (type > 0 && type < 5 && ((t_cmmnds *)last->content)->broken == 0)
-		// 	i = i + open_file_and_save_fd(uni, last->content, i, type);
-		// else if (type == 0 && ((t_cmmnds *)last->content)->broken == 0)
-		// {
-		// 	if (handle_wildcard(uni->commands[i], (t_cmmnds *)last->content))
-		// 		cmmnd_to_struct(((t_cmmnds *)last->content), uni->commands[i]);
-		// }
-		// else if (type == PIPE || type == AND || type == OR)
-		// {
-		// 	((t_cmmnds *)last->content)->type = type;
-		// 	last = next_cmmnd_struct(uni, last, i);
-		// }
-		// printf("index i: %i\n", i);
-		// printf("commandslen: %s\n", uni->commands[i]);
-		// i++;
 	}
     // Debugging print to display the command structure
     printf("\033[31mCommand structure:\033[0m\n");
