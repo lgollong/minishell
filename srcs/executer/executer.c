@@ -6,7 +6,7 @@
 /*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 14:16:32 by rwegat            #+#    #+#             */
-/*   Updated: 2024/12/22 15:39:16 by rwegat           ###   ########.fr       */
+/*   Updated: 2024/12/22 15:56:34 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,19 +95,18 @@ int	is_not_executable(t_cmmnds	*cmd_strct, int builtin)
 }
 
 // iterates throught the t_list and runs all commands
-void	run_cmmnds(t_cmmnds *cmd_strct)
+void	run_cmmnds(void *content)
 {
-	int	builtin;
-	int	wstatus;
+	t_cmmnds	*cmd_strct;
+	int			builtin;
 
+	cmd_strct = (t_cmmnds *)content;
 	if (cmd_strct->uni->stop == 1)
 		return ;
 	builtin = isbuiltin(cmd_strct);
 	if (is_not_executable(cmd_strct, builtin) == 1)
 		return ;
-	if (builtin && ((cmd_strct && cmd_strct->type == AND) || (cmd_strct && cmd_strct->type == OR)))
-		g_exitcode = exec_builtin(cmd_strct, builtin, 0);
-	else
+	if (!builtin || (cmd_strct && cmd_strct->type == PIPE))
 	{
 		cmd_strct->uni->pid = fork();
 		if (cmd_strct->uni->pid < 0)
@@ -119,29 +118,33 @@ void	run_cmmnds(t_cmmnds *cmd_strct)
 			dup2(cmd_strct->inf, 0);
 			dup2(cmd_strct->outf, 1);
 			ft_lstiter(cmd_strct->uni->cmd_lst, close_fds);
-			execve(cmd_strct->cmd_path, cmd_strct->cmd_array, cmd_strct->uni->envp);
+			execve(cmd_strct->cmd_path, cmd_strct->cmd_array,
+				cmd_strct->uni->envp);	
 			exit_minishell(2, cmd_strct->uni);
 		}
 		else
 		{
-			if (cmd_strct && (cmd_strct->type == PIPE || cmd_strct->type == 0))
+			int wstatus;
+			if (cmd_strct && cmd_strct->type == PIPE)
 			{
-				if (waitpid(cmd_strct->uni->pid, &wstatus, 0) != -1)
-					return ;
+				if (waitpid(cmd_strct->uni->pid, &wstatus, WNOHANG) == -1)
+					return;
 			}
-			// else if (cmd_strct && (cmd_strct->type == AND || cmd_strct->type == OR))
+			// else if ((cmd_strct && (cmd_strct->type == AND || cmd_strct->type == OR)))
 			// {
-			// 	if (waitpid(cmd_strct->uni->pid, &wstatus, 0) != -1)
-			// 		return ;
+				// if (waitpid(cmd_strct->uni->pid, &wstatus, 0) == -1)
+				// 	return ;
+				usleep(100);
 			// }
 			if (WIFEXITED(wstatus))
+			{
 				g_exitcode = WEXITSTATUS(wstatus);
+			}
 		}
 	}
-	if (cmd_strct->right)
+	else
 	{
-		logical_subshell(&cmd_strct->right, &cmd_strct->uni->cmd_lst);
-		run_cmmnds(cmd_strct->right);
+		g_exitcode = exec_builtin(cmd_strct, builtin, 0);
 	}
 }
 
@@ -179,10 +182,10 @@ void	wait_for_exitcode(t_uni *uni)
 #include <unistd.h>
 
 // start command execution
-// start command execution
 void	executer(t_uni *uni)
 {
 	t_cmmnds	*cmd_strct;
+	t_list		*current;
 
 	if (!uni->cmd_lst)
 		return ;
@@ -195,8 +198,18 @@ void	executer(t_uni *uni)
 	}
 	else
 	{
-		logical_subshell(&cmd_strct, &uni->cmd_lst);
-		run_cmmnds(cmd_strct);
+		current = uni->cmd_lst;
+		while (current)
+		{
+			cmd_strct = (t_cmmnds *)current->content;
+			logical_subshell(&cmd_strct, &current);
+			if (cmd_strct && current)
+			{
+				usleep(100);
+				run_cmmnds(cmd_strct);
+				current = current->next;
+			}
+		}
 		ft_lstiter(uni->cmd_lst, close_fds);
 		wait_for_exitcode(uni);
 	}
