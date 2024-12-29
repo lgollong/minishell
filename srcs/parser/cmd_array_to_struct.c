@@ -6,7 +6,7 @@
 /*   By: elgollong <elgollong@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 14:15:52 by rwegat            #+#    #+#             */
-/*   Updated: 2024/12/22 16:20:29 by elgollong        ###   ########.fr       */
+/*   Updated: 2024/12/23 15:42:11 by elgollong        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,14 +107,14 @@ t_list	*next_cmmnd_struct(t_uni *uni, t_list *last, int i)
 		free(tube);
 		return (NULL);
 	}
-	if (((t_cmmnds *)tmp->content)->outf == 1 && ((t_cmmnds *)tmp->content)->type != AND && ((t_cmmnds *)tmp->content)->type != OR)
-		((t_cmmnds *)tmp->content)->outf = tube[1];
-	else
-		close(tube[1]);
-	if (((t_cmmnds *)tmp->content)->inf == 0 && ((t_cmmnds *)tmp->content)->type != AND && ((t_cmmnds *)tmp->content)->type != OR)
+	if (((t_cmmnds *)tmp->content)->type == PIPE)
 		((t_cmmnds *)last->content)->inf = tube[0];
 	else
 		close(tube[0]);
+	if (((t_cmmnds *)tmp->content)->type == PIPE)
+		((t_cmmnds *)tmp->content)->outf = tube[1];
+	else
+		close(tube[1]);
 	free(tube);
 	return (last);
 }
