@@ -6,7 +6,7 @@
 #    By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/09 15:14:04 by lgollong          #+#    #+#              #
-#    Updated: 2024/12/21 16:11:22 by rwegat           ###   ########.fr        #
+#    Updated: 2025/01/16 17:00:30 by rwegat           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,7 @@ LIBFTDIR = ./libft
 LIBFT = ./libft/libft.a
 USER := $(shell whoami)
 
-ifeq ($(USER), elgollong)
+ifeq ($(USER), rmwegat)
 	LDFLAGS  = -L/opt/homebrew/Cellar/readline/8.2.13/lib
 	CPPFLAGS = -I/opt/homebrew/Cellar/readline/8.2.13/include
 else
@@ -35,12 +35,14 @@ SRCS =	srcs/main.c							\
 		srcs/parser/handle_metachars.c		\
 		srcs/parser/remove_quotes.c			\
 		srcs/parser/cmd_array_to_struct.c 	\
+		srcs/parser/cmd_array_to_struct2.c 	\
 		srcs/parser/open_files.c			\
 		srcs/parser/get_here_doc.c 			\
 		\
 		srcs/parser/wildcard_bonus.c		\
 		\
 		srcs/executer/executer.c			\
+		srcs/executer/executer2.c			\
 		\
 		srcs/helpers.c 						\
 		srcs/helpers2.c 					\

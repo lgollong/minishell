@@ -6,10 +6,9 @@
 /*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 14:15:23 by rwegat            #+#    #+#             */
-/*   Updated: 2024/12/18 10:49:24 by rwegat           ###   ########.fr       */
+/*   Updated: 2025/01/16 16:55:45 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "../../minishell.h"
 
@@ -35,18 +34,21 @@ int	cut_allow_checker(char mark, int reset)
 		return (0);
 }
 
-// check if string is empty
-int	is_empty(char *str)
+unsigned int	ft_skip_word(char *str, unsigned int i)
 {
-	int	i;
-
-	i = -1;
-	while (str[++i])
+	if ((str[i] == '|' && str[i + 1] == '|') || \
+	(str[i] == '&' && str[i + 1] == '&'))
+		i += 2;
+	else
+		i++;
+	if (ft_strchr("<|>&()", str[i - 1]) == NULL)
 	{
-		if (str[i] != ' ')
-			return (1);
+		while (ft_strchr("<|>&() ", str[i]) == NULL && \
+		!((str[i] == '|' && str[i + 1] == '|') || \
+		(str[i] == '&' && str[i + 1] == '&')))
+			i++;
 	}
-	return (0);
+	return (i);
 }
 
 // count the words/arguments
@@ -65,16 +67,7 @@ unsigned int	ft_word_count(char *str)
 		if (cut_allow_checker(str[i], 0) == 0 && str[i] != ' ')
 		{
 			counter++;
-			if ((str[i] == '|' && str[i + 1] == '|') || (str[i] == '&' && str[i + 1] == '&'))
-				i += 2;
-			else
-				i++;
-			if (ft_strchr("<|>&()", str[i - 1]) == NULL)
-			{
-				while (ft_strchr("<|>&() ", str[i]) == NULL && 
-				!((str[i] == '|' && str[i + 1] == '|') || (str[i] == '&' && str[i + 1] == '&')))
-					i++;
-			}
+			i = ft_skip_word(str, i);
 		}
 		else
 			i++;
@@ -91,7 +84,8 @@ unsigned int	ft_letter_count(const char *str, unsigned int i)
 
 	k = 0;
 	cut_allow_checker('x', 1);
-	if ((str[i] == '|' && str[i + 1] == '|') || (str[i] == '&' && str[i + 1] == '&'))
+	if ((str[i] == '|' && str[i + 1] == '|') || \
+	(str[i] == '&' && str[i + 1] == '&'))
 		return (2);
 	if (ft_strchr("<|>&()", str[i]) != NULL)
 		return (1);

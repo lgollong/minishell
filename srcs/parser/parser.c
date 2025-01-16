@@ -72,31 +72,6 @@ void	set_dollar_underscore_env(t_uni *uni)
 	}
 }
 
-void	print_list(t_list *lst)
-{
-	t_list	*tmp;
-	t_cmmnds	*cmd;
-
-	(void)cmd;
-	tmp = lst;
-	while (tmp)
-	{
-		// cmd = tmp->content;
-		// printf("Command Array: ");
-		// if (cmd->cmd_array)
-		// {
-		// 	for (int i = 0; cmd->cmd_array[i]; i++)
-		// 	{
-		// 		printf("%s ", cmd->cmd_array[i]);
-		// 	}
-		// }
-		// ("\n");
-		// printf("Type: %d\n", cmd->type);
-		// printf("Scope: %d\n", cmd->scope);
-		tmp = tmp->next;
-	}
-}
-
 // function for input-parsing
 void	parser(t_uni *uni)
 {

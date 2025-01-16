@@ -6,7 +6,7 @@
 /*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/09 15:29:14 by lgollong          #+#    #+#             */
-/*   Updated: 2024/12/18 11:53:31 by rwegat           ###   ########.fr       */
+/*   Updated: 2025/01/16 17:00:00 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,7 @@ void		print_long_error_msg(char *cmmnd, char *arg, char *msg);
 // parser/...
 void		parser(t_uni *uni);
 char		**split_input(char *str);
+int			is_empty(char *str);
 void		handle_metachars(t_uni *uni, char **array);
 char		*check_for_metachars(t_uni *uni, char *str, int *j, int *cnt);
 char		*replace_part_of_str(char *str, int start,
@@ -110,10 +111,18 @@ int			open_file_and_save_fd(t_uni *uni,
 void		start_here_doc(t_uni *uni, t_cmmnds *cmd_strct, int i);
 char		*get_path(char *cmmnd, char *envp[]);
 int			syntax_error(t_uni *uni, char *token);
+t_cmmnds	*create_cmmnd_struct(t_uni *uni);
 void		cmmnd_to_struct(t_cmmnds *cmmnd_struct, char *command);
+int			get_type(t_uni *uni, int i);
+
 
 // executer/...
+void		run_builtin_or_fork(t_cmmnds *cmd_strct, int builtin);
+void		run_cmmnds(void *content);
+void		wait_for_exitcode(t_uni *uni);
+void		logical_subshell(t_cmmnds **tmp, t_list **current);
 void		close_fds(void *content);
+int			is_not_executable(t_cmmnds *cmd_strct, int builtin);
 void		executer(t_uni *uni);
 
 //builtins

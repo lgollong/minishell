@@ -14,7 +14,6 @@
 
 void	edit_printed_name(char *filename, char *wildcard)
 {
-	
 	DIR				*dir;
 
 	(void)wildcard;
