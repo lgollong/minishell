@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_metachars.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lgollong <lgollong@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/20 15:15:50 by tilman            #+#    #+#             */
-/*   Updated: 2022/12/16 16:06:38 by lgollong         ###   ########.fr       */
+/*   Updated: 2024/11/15 11:53:57 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ char	*check_for_metachars(t_uni *uni, char *str, int *j, int *cnt)
 		free(home);
 	}
 	if (cnt[1] % 2 == 0 && cnt[0] % 2 == 0
-		&& (str[*j] == '\\' || str[*j] == ';'))
+		&& ((str[*j] == '\\' && str[*j + 1] != '*') || str[*j] == ';'))
 	{
 		str = replace_part_of_str(str, *j, *j + 1, NULL);
 		(*j)--;

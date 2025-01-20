@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   open_files.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lgollong <lgollong@student.42.fr>          +#+  +:+       +#+        */
+/*   By: elgollong <elgollong@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/04 11:24:36 by tfriedri          #+#    #+#             */
-/*   Updated: 2022/12/16 17:14:16 by lgollong         ###   ########.fr       */
+/*   Created: 2022/11/04 11:24:36 by lgollong          #+#    #+#             */
+/*   Updated: 2024/12/15 20:32:37 by elgollong        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,15 +91,15 @@ int	open_file_and_save_fd(t_uni *uni, t_cmmnds *cmd_strct, int i, int type)
 
 	flags[0] = get_flags(type, 0);
 	flags[1] = get_flags(type, 1);
-	if (type == 1)
+	if (type == INFILE_RE)
 		cmd_strct->broken = open_file(uni, i, &cmd_strct->inf, flags);
-	else if (type == 2)
+	else if (type == HERE_DOC_RE)
 		start_here_doc(uni, cmd_strct, i);
-	else if (type == 3)
+	else if (type == WR_TO_OUT)
 		cmd_strct->broken = open_file(uni, i, &cmd_strct->outf, flags);
 	else
 		cmd_strct->broken = open_file(uni, i + 1, &cmd_strct->outf, flags);
-	if (type == 2 || type == 4)
+	if (type == HERE_DOC_RE || type == AP_TO_OUT)
 		ret_val = 3;
 	else
 		ret_val = 2;

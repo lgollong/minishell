@@ -6,7 +6,7 @@
 /*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/16 16:55:11 by rwegat            #+#    #+#             */
-/*   Updated: 2025/01/16 16:55:53 by rwegat           ###   ########.fr       */
+/*   Updated: 2025/01/16 19:22:15 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ int	is_empty(char *str)
 // type == 3 ?		write to outfile
 // type == 4 ?		append to outfile
 // type == 5 ?		pipe
-// bonus:
 // type == 6 ?		&& AND
 // type == 7 ?		|| OR
 // type == 8 ?		( parentheses open

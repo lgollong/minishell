@@ -1,26 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: lgollong <lgollong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/06 15:56:20 by lgollong          #+#    #+#             */
-/*   Updated: 2022/12/09 01:32:57 by tfriedri         ###   ########.fr       */
+/*   Created: 2022/12/06 15:57:14 by lgollong          #+#    #+#             */
+/*   Updated: 2024/12/10 15:30:50 by lgollong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-int	ft_pwd(t_cmmnds *node)
+int	ft_env(t_cmmnds *node)
 {
-	char	*str;
+	int	i;
 
-	str = getcwd(NULL, 0);
-	if (!str)
+	i = 0;
+	if (!node->uni->envp)
 		return (1);
-	ft_putstr_fd(str, node->outf);
-	ft_putstr_fd("\n", node->outf);
-	free(str);
+	while (node->uni->envp[i])
+	{
+		if (ft_strchr(node->uni->envp[i], '='))
+		{
+			ft_putstr_fd(node->uni->envp[i], node->outf);
+			ft_putstr_fd("\n", node->outf);
+			i++;
+		}
+		else
+			i++;
+	}
 	return (0);
 }

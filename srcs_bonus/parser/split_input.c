@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split_input.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/06 15:25:26 by lgollong          #+#    #+#             */
-/*   Updated: 2022/12/17 19:06:23 by tfriedri         ###   ########.fr       */
+/*   Created: 2024/12/13 14:15:23 by rwegat            #+#    #+#             */
+/*   Updated: 2025/01/16 16:55:45 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,18 +34,21 @@ int	cut_allow_checker(char mark, int reset)
 		return (0);
 }
 
-// check if string is empty
-int	is_empty(char *str)
+unsigned int	ft_skip_word(char *str, unsigned int i)
 {
-	int	i;
-
-	i = -1;
-	while (str[++i])
+	if ((str[i] == '|' && str[i + 1] == '|') || \
+	(str[i] == '&' && str[i + 1] == '&'))
+		i += 2;
+	else
+		i++;
+	if (ft_strchr("<|>&()", str[i - 1]) == NULL)
 	{
-		if (str[i] != ' ')
-			return (1);
+		while (ft_strchr("<|>&() ", str[i]) == NULL && \
+		!((str[i] == '|' && str[i + 1] == '|') || \
+		(str[i] == '&' && str[i + 1] == '&')))
+			i++;
 	}
-	return (0);
+	return (i);
 }
 
 // count the words/arguments
@@ -61,18 +64,14 @@ unsigned int	ft_word_count(char *str)
 		i++;
 	while (str[i])
 	{
-		if (cut_allow_checker(str[i], 0) == 0
-			&& str[i] != ' ')
+		if (cut_allow_checker(str[i], 0) == 0 && str[i] != ' ')
 		{
 			counter++;
-			i++;
-			if (ft_strchr("<|>", str[i - 1]) == NULL)
-			{
-				while (ft_strchr("<|> ", str[i]) == NULL)
-					i++;
-			}
+			i = ft_skip_word(str, i);
 		}
 		else
+			i++;
+		while (str[i] == ' ')
 			i++;
 	}
 	return (counter);
@@ -85,12 +84,15 @@ unsigned int	ft_letter_count(const char *str, unsigned int i)
 
 	k = 0;
 	cut_allow_checker('x', 1);
-	if (ft_strchr("|<>", str[i]) != NULL)
+	if ((str[i] == '|' && str[i + 1] == '|') || \
+	(str[i] == '&' && str[i + 1] == '&'))
+		return (2);
+	if (ft_strchr("<|>&()", str[i]) != NULL)
 		return (1);
 	while (str[i] != '\0')
 	{
 		if (cut_allow_checker(str[i], 0) == 0
-			&& ft_strchr("|<> ", str[i]) != NULL)
+			&& ft_strchr("<|>&() ", str[i]) != NULL)
 			break ;
 		i++;
 		k++;
@@ -105,25 +107,25 @@ char	**split_input(char *str)
 	unsigned int		j;
 	unsigned int		str_len;
 	unsigned int		wrd_cnt;
-	char				**strb;
+	char				**cmd_array;
 
 	i = 0;
 	j = 0;
 	wrd_cnt = ft_word_count(str);
-	strb = (char **)ft_calloc(sizeof(char *), (wrd_cnt + 1));
-	if (!strb)
+	cmd_array = (char **)ft_calloc(sizeof(char *), (wrd_cnt + 1));
+	if (!cmd_array)
 		return (NULL);
 	while (str[i] == ' ')
-			i++;
+		i++;
 	while (str[i])
 	{
 		str_len = ft_letter_count(str, i);
 		if (cut_allow_checker('x', 0) != 1)
-			strb[j++] = ft_substr(str, i, str_len);
+			cmd_array[j++] = ft_substr(str, i, str_len);
 		i = i + str_len;
 		while (str[i] == ' ')
 			i++;
 	}
-	strb[wrd_cnt] = NULL;
-	return (strb);
+	cmd_array[wrd_cnt] = NULL;
+	return (cmd_array);
 }

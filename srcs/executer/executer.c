@@ -3,28 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
+/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/13 14:16:32 by rwegat            #+#    #+#             */
-/*   Updated: 2025/01/16 16:52:44 by rwegat           ###   ########.fr       */
+/*   Created: 2022/10/19 12:14:39 by tilman            #+#    #+#             */
+/*   Updated: 2022/12/17 20:35:19 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-// iterates through the t_list and closes all open file-descriptors
+
+// iterates throught the t_list and closes all open file-descriptors
 void	close_fds(void *content)
 {
 	t_cmmnds	*cmd_strct;
 
 	cmd_strct = (t_cmmnds *)content;
-	if (cmd_strct->inf != -1 && cmd_strct->inf != 0)
+	if (cmd_strct->inf != 0 && cmd_strct->inf != -1)
 		close(cmd_strct->inf);
-	if (cmd_strct->outf != -1 && cmd_strct->outf != 1)
+	if (cmd_strct->outf != 1 && cmd_strct->outf != -1)
 		close(cmd_strct->outf);
 }
 
 // checks if command is executable
-int	is_not_executable(t_cmmnds *cmd_strct, int builtin)
+int	is_not_executable(t_cmmnds	*cmd_strct, int builtin)
 {
 	if (cmd_strct->broken != 0)
 	{
@@ -50,43 +51,86 @@ int	is_not_executable(t_cmmnds *cmd_strct, int builtin)
 	return (0);
 }
 
-// start command execution
-void	execute_single_builtin(t_uni *uni, t_cmmnds *cmd_strct)
-{
-	g_exitcode = exec_builtin(cmd_strct, isbuiltin(cmd_strct), 0);
-	ft_lstiter(uni->cmd_lst, close_fds);
-}
-
-void	execute_commands(t_uni *uni)
+// iterates throught the t_list and runs all commands
+void	run_cmmnds(void *content)
 {
 	t_cmmnds	*cmd_strct;
-	t_list		*current;
+	int			builtin;
 
-	current = uni->cmd_lst;
-	while (current)
+	cmd_strct = (t_cmmnds *)content;
+	if (cmd_strct->uni->stop == 1)
+		return ;
+	builtin = isbuiltin(cmd_strct);
+	if (is_not_executable(cmd_strct, builtin) == 1)
+		return ;
+	cmd_strct->uni->pid = fork();
+	if (cmd_strct->uni->pid < 0)
+		return ;
+	if (cmd_strct->uni->pid == 0)
 	{
-		cmd_strct = (t_cmmnds *)current->content;
-		logical_subshell(&cmd_strct, &current);
-		if (cmd_strct && current)
-		{
-			run_cmmnds(cmd_strct);
-			current = current->next;
-		}
+		if (builtin)
+			exec_builtin(cmd_strct, builtin, 1);
+		dup2(cmd_strct->inf, 0);
+		dup2(cmd_strct->outf, 1);
+		ft_lstiter(cmd_strct->uni->cmd_lst, close_fds);
+		execve(cmd_strct->cmd_path, cmd_strct->cmd_array,
+			cmd_strct->uni->envp);
+		close(0);
+		close(1);
+		exit_minishell(2, cmd_strct->uni);
 	}
-	ft_lstiter(uni->cmd_lst, close_fds);
-	wait_for_exitcode(uni);
 }
 
+// wait for the subprocesses and gets exitcode
+void	wait_for_exitcode(t_uni *uni)
+{
+	int			wstatus;
+	t_cmmnds	*last;
+	int			temp_exitcode;
+
+	temp_exitcode = -1;
+	last = ft_lstlast(uni->cmd_lst)->content;
+	if (waitpid(uni->pid, &wstatus, 0) != -1 && WIFEXITED(wstatus))
+		temp_exitcode = WEXITSTATUS(wstatus);
+	while ((waitpid(-1, &wstatus, 0) != -1))
+		continue ;
+	if (temp_exitcode != -1)
+		g_exitcode = temp_exitcode;
+	if (g_exitcode == 130)
+		write(2, "\n", 1);
+	if (g_exitcode == 131)
+		write(2, "Quit\n", 5);
+	if (last->broken != 0)
+		g_exitcode = last->broken;
+	else if (!isbuiltin(last) && !last->cmd_path)
+		g_exitcode = 127;
+	else if (last->cmd_path && !isbuiltin(last)
+		&& (!access(last->cmd_path, F_OK)
+			&& access(last->cmd_path, X_OK) < 0))
+		g_exitcode = 126;
+	return ;
+}
+
+// start command execution
 void	executer(t_uni *uni)
 {
 	t_cmmnds	*cmd_strct;
+	int			builtin;
 
 	if (!uni->cmd_lst)
 		return ;
 	signal(SIGQUIT, &quit_handler);
 	cmd_strct = (t_cmmnds *)uni->cmd_lst->content;
-	if (ft_lstsize(uni->cmd_lst) == 1 && isbuiltin(cmd_strct))
-		execute_single_builtin(uni, cmd_strct);
+	builtin = isbuiltin(cmd_strct);
+	if (ft_lstsize(uni->cmd_lst) == 1 && builtin)
+	{
+		g_exitcode = exec_builtin(cmd_strct, builtin, 0);
+		ft_lstiter(uni->cmd_lst, close_fds);
+	}
 	else
-		execute_commands(uni);
+	{
+		ft_lstiter(uni->cmd_lst, run_cmmnds);
+		ft_lstiter(uni->cmd_lst, close_fds);
+		wait_for_exitcode(uni);
+	}
 }

@@ -3,28 +3,64 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_array_to_struct.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
+/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/13 14:15:52 by rwegat            #+#    #+#             */
-/*   Updated: 2025/01/16 16:54:37 by rwegat           ###   ########.fr       */
+/*   Created: 2022/11/17 17:04:53 by tfriedri          #+#    #+#             */
+/*   Updated: 2022/12/17 18:49:21 by tfriedri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-// appends a new t_cmmnds struct to the cmmnds_lst
-void	set_pipes(t_cmmnds *tmp_content, t_cmmnds *last_content, int *tube)
+// gets redirection and direction types
+// type == 0 ?		command
+// type == 1 ?		infile-redirection
+// type == 2 ?		here_doc-redirection
+// type == 3 ?		write to outfile
+// type == 4 ?		append to outfile
+// type == 5 ?		pipe
+int	get_type(t_uni *uni, int i)
 {
-	if (tmp_content->type == PIPE)
-		last_content->inf = tube[0];
-	else
-		close(tube[0]);
-	if (tmp_content->type == PIPE)
-		tmp_content->outf = tube[1];
-	else
-		close(tube[1]);
+	int	type;
+
+	type = 0;
+	if (ft_strlen(uni->commands[i]) == 1
+		&& ft_strcmp(uni->commands[i], "<") == 0)
+		type = 1;
+	if (type == 1 && uni->commands[i + 1]
+		&& ft_strlen(uni->commands[i + 1]) == 1
+		&& ft_strcmp(uni->commands[i + 1], "<") == 0)
+		type = 2;
+	if (type == 0 && ft_strlen(uni->commands[i]) == 1
+		&& ft_strcmp(uni->commands[i], ">") == 0)
+		type = 3;
+	if (type == 3 && uni->commands[i + 1]
+		&& ft_strlen(uni->commands[i + 1]) == 1
+		&& ft_strcmp(uni->commands[i + 1], ">") == 0)
+		type = 4;
+	if (type == 0 && ft_strcmp(uni->commands[i], "|") == 0)
+		type = 5;
+	return (type);
 }
 
+// returns a new t_cmmnds struct
+t_cmmnds	*create_cmmnd_struct(t_uni *uni)
+{
+	t_cmmnds	*cmmnd_struct;
+
+	cmmnd_struct = ft_calloc(1, sizeof(t_cmmnds));
+	if (!cmmnd_struct)
+		return (NULL);
+	cmmnd_struct->cmd_array = NULL;
+	cmmnd_struct->cmd_path = NULL;
+	cmmnd_struct->inf = 0;
+	cmmnd_struct->outf = 1;
+	cmmnd_struct->uni = uni;
+	cmmnd_struct->broken = 0;
+	return (cmmnd_struct);
+}
+
+// appends a new t_cmmnds struct to the cmmnds_lst
 t_list	*next_cmmnd_struct(t_uni *uni, t_list *last, int i)
 {
 	t_list	*tmp;
@@ -37,8 +73,6 @@ t_list	*next_cmmnd_struct(t_uni *uni, t_list *last, int i)
 	last = ft_lstlast(uni->cmd_lst);
 	if (!last || !last->content)
 		exit(1);
-	((t_cmmnds *)tmp->content)->right = (t_cmmnds *)last->content;
-	((t_cmmnds *)last->content)->left = (t_cmmnds *)tmp->content;
 	tube = ft_calloc(2, sizeof(int));
 	if (!tube)
 		return (NULL);
@@ -47,7 +81,11 @@ t_list	*next_cmmnd_struct(t_uni *uni, t_list *last, int i)
 		free(tube);
 		return (NULL);
 	}
-	set_pipes((t_cmmnds *)tmp->content, (t_cmmnds *)last->content, tube);
+	if (((t_cmmnds *)tmp->content)->outf == 1)
+		((t_cmmnds *)tmp->content)->outf = tube[1];
+	else
+		close(tube[1]);
+	((t_cmmnds *)last->content)->inf = tube[0];
 	free(tube);
 	return (last);
 }
@@ -61,30 +99,6 @@ void	cmmnd_to_struct(t_cmmnds *cmmnd_struct, char *command)
 
 // loops throught the commands-array and creates the 
 // cmd_lst with t_cmmnds-structs as content
-void	handle_command_type(t_uni *uni, t_list **last, int *i, int type)
-{
-	if (type == PAR_OPEN)
-		uni->scope_p++;
-	else if (type == PAR_CLOSE)
-		uni->scope_p--;
-	if (type > 0 && type < 5 && ((t_cmmnds *)(*last)->content)->broken == 0)
-		*i = *i + open_file_and_save_fd(uni, (*last)->content, *i, type);
-	else if (type == 0 && ((t_cmmnds *)(*last)->content)->broken == 0)
-	{
-		if (handle_wildcard(uni->commands[*i], (t_cmmnds *)(*last)->content))
-			cmmnd_to_struct(((t_cmmnds *)(*last)->content), uni->commands[*i]);
-		(*i)++;
-	}
-	else if (type == PIPE || type == AND || type == OR)
-	{
-		if (*last && (*last)->content)
-			((t_cmmnds *)(*last)->content)->type = type;
-		*last = next_cmmnd_struct(uni, *last, (*i)++);
-	}
-	else
-		(*i)++;
-}
-
 void	cmd_array_to_struct(t_uni *uni)
 {
 	int		i;
@@ -92,14 +106,20 @@ void	cmd_array_to_struct(t_uni *uni)
 	t_list	*last;
 
 	i = 0;
-	type = 0;
 	uni->cmd_lst = ft_lstnew(create_cmmnd_struct(uni));
 	last = uni->cmd_lst;
-	while (uni->commands[i] && uni->stop == 0
+	while (uni->stop == 0 && uni->commands[i]
 		&& last != NULL && last->content != NULL)
 	{
 		type = get_type(uni, i);
-		handle_command_type(uni, &last, &i, type);
+		if (type > 0 && type < 5 && ((t_cmmnds *)last->content)->broken == 0)
+			i = i + open_file_and_save_fd(uni, last->content, i, type);
+		else if (type == 0 && ((t_cmmnds *)last->content)->broken == 0)
+			cmmnd_to_struct(((t_cmmnds *)last->content), uni->commands[i++]);
+		else if (type == 5)
+			last = next_cmmnd_struct(uni, last, i++);
+		else
+			i++;
 	}
 	if (i != 0 && i == array_length(uni->commands) && (uni->commands[i - 1]
 			&& !ft_strcmp(uni->commands[i - 1], "|")))

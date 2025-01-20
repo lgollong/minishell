@@ -1,5 +1,0 @@
-mkdir new_dir && cd new_dir || 
-echo "Directory creation failed" && touch file1.txt || echo "Touch failed" && echo "This is file 1" > file1.txt || echo "File write failed" && cat < file1.txt | grep "file" || echo "File content search failed" && echo "Another line" >> file1.txt && echo "Appending line" || echo "Append failed" && ls -l > directory_list.txt || echo "Directory list failed" && cat directory_list.txt | grep "file" || echo "Grep failed" && echo "Removing file" > rm_file.txt && rm rm_file.txt || echo "Remove file failed" && touch new_file && echo "File content" > new_file || echo "File content failed" && cat new_file | tee final_file.txt || echo "Tee failed" && rm -rf new_file && ls
-
-error: command mkdir new_dir && cd new_dir
-cd starts prematurely

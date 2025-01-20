@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_here_doc.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: lgollong <lgollong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/09 20:02:22 by tfriedri          #+#    #+#             */
-/*   Updated: 2022/12/14 11:21:27 by tfriedri         ###   ########.fr       */
+/*   Created: 2022/11/09 20:02:22 by lgollong          #+#    #+#             */
+/*   Updated: 2024/12/10 15:30:50 by lgollong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

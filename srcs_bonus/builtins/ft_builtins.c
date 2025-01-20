@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_builtins.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: elgollong <elgollong@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 15:53:38 by lgollong          #+#    #+#             */
-/*   Updated: 2022/12/17 17:54:15 by tfriedri         ###   ########.fr       */
+/*   Updated: 2024/12/15 16:26:05 by elgollong        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

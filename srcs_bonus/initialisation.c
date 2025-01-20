@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   initialisation.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfriedri <tfriedri@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: rwegat <rwegat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/29 14:01:05 by tfriedri          #+#    #+#             */
-/*   Updated: 2022/12/17 17:56:52 by tfriedri         ###   ########.fr       */
+/*   Created: 2022/11/29 14:01:05 by lgollong          #+#    #+#             */
+/*   Updated: 2024/12/10 23:41:59 by rwegat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,5 +117,7 @@ t_uni	*init_uni_struct(int argc, char *argv[], char **envp)
 	uni->stop = 0;
 	get_environment(uni, envp);
 	uni->cmd_lst = NULL;
+	uni->scope_p = 0;
+	uni->last_exit_status = 0;
 	return (uni);
 }
